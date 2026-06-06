@@ -1,0 +1,144 @@
+.about {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8rem 2rem;
+  background-color: var(--bg-secondary);
+  position: relative;
+  z-index: 2;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1.3fr;
+  gap: 6rem;
+  align-items: center;
+}
+
+.imageWrapper {
+  perspective: 1000px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.imageCard {
+  width: 100%;
+  max-width: 400px;
+  height: 520px;
+  padding: 1.25rem;
+  border-radius: 1.5rem;
+  transform-style: preserve-3d;
+  box-shadow: var(--glass-glow);
+}
+
+.imageContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 1rem;
+  overflow: hidden;
+  transform: translateZ(20px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.image {
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.imageCard:hover .image {
+  transform: scale(1.05);
+}
+
+.textCard {
+  display: flex;
+  flex-direction: column;
+}
+
+.tag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--accent-purple);
+  margin-bottom: 0.75rem;
+}
+
+.title {
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin-bottom: 2rem;
+}
+
+.bio {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--text-muted);
+  margin-bottom: 1.5rem;
+  font-weight: 400;
+}
+
+.skillsSection {
+  margin-top: 2rem;
+}
+
+.skillsTitle {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 1.25rem;
+  letter-spacing: 0.05em;
+}
+
+.skillsGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.skillPill {
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.6rem 1.2rem;
+  border-radius: 2rem;
+  color: var(--text-main);
+  transition: all 0.3s ease;
+  border: 1px solid var(--glass-border);
+}
+
+.skillPill:hover {
+  border-color: var(--accent-cyan);
+  background: rgba(0, 240, 255, 0.05);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 992px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 4rem;
+  }
+  
+  .imageCard {
+    height: 480px;
+  }
+}
+
+@media (max-width: 576px) {
+  .about {
+    padding: 6rem 1.5rem;
+  }
+  
+  .imageCard {
+    height: 380px;
+  }
+}

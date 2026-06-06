@@ -1,0 +1,114 @@
+.navbar {
+  position: fixed;
+  top: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 4rem);
+  max-width: 1200px;
+  height: 4.5rem;
+  border-radius: 2.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2.5rem;
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  color: var(--text-main);
+  display: inline-block;
+}
+
+.logoDot {
+  color: var(--accent-cyan);
+  text-shadow: 0 0 10px var(--accent-cyan);
+}
+
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.navLink {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  transition: color 0.3s ease;
+}
+
+.navLink:hover {
+  color: var(--text-main);
+}
+
+.badgeContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(0, 240, 255, 0.05);
+  border: 1px solid rgba(0, 240, 255, 0.15);
+  padding: 0.45rem 1.1rem;
+  border-radius: 1.5rem;
+}
+
+.badgeDot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--accent-cyan);
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 8px var(--accent-cyan);
+  animation: pulse 1.2s infinite alternate;
+}
+
+.badgeText {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--accent-cyan);
+}
+
+@keyframes pulse {
+  from {
+    transform: scale(0.8);
+    opacity: 0.6;
+  }
+  to {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    top: 1rem;
+    width: calc(100% - 2rem);
+    padding: 0 1.25rem;
+  }
+  
+  .navLinks {
+    gap: 0.5rem;
+  }
+  
+  .navLink {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.85rem;
+  }
+  
+  .badgeContainer {
+    display: none;
+  }
+}
