@@ -1,120 +1,291 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+/* ==========================================================================
+   Editorial Swiss — design tokens
+   Paper ground, ink type, one signal accent. No gradients, no glass, no glow.
+   ========================================================================== */
 
 :root {
-  --bg-primary: #030303;
-  --bg-secondary: #0a0a0a;
-  --bg-tertiary: #121212;
-  
-  --accent-cyan: #00f0ff;
-  --accent-purple: #bd00ff;
-  --accent-glow: rgba(0, 240, 255, 0.15);
-  
-  --text-main: #f5f5f7;
-  --text-muted: #86868b;
-  --text-dark: #1d1d1f;
+  /* --- Ground ------------------------------------------------------------ */
+  --paper: #f4f1ea;
+  --paper-raised: #ece8de;
+  --paper-sunk: #e2ddd1;
 
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-bg: rgba(255, 255, 255, 0.03);
-  --glass-glow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  
-  --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-serif: 'Playfair Display', Georgia, serif;
+  /* --- Ink --------------------------------------------------------------- */
+  --ink: #111110;
+  --ink-soft: #46443e;
+  --ink-muted: #85806f;
+  --ink-faint: #a9a496;
+
+  /* --- The one accent ---------------------------------------------------- */
+  --signal: #e4321b;
+  --signal-soft: rgba(228, 50, 27, 0.12);
+
+  /* --- Rules ------------------------------------------------------------- */
+  --rule: rgba(17, 17, 16, 0.16);
+  --rule-strong: rgba(17, 17, 16, 0.32);
+  --rule-faint: rgba(17, 17, 16, 0.08);
+
+  /* --- Type -------------------------------------------------------------- */
+  --font-sans: var(--font-archivo), "Helvetica Neue", Helvetica, Arial,
+    sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Fluid scale. Display is deliberately enormous — that is the whole idiom. */
+  --fs-display: clamp(3.25rem, 13vw, 13.5rem);
+  --fs-h1: clamp(2.5rem, 7.5vw, 6.5rem);
+  --fs-h2: clamp(1.875rem, 4.5vw, 3.75rem);
+  --fs-h3: clamp(1.25rem, 2.2vw, 1.875rem);
+  --fs-lead: clamp(1.0625rem, 1.6vw, 1.375rem);
+  --fs-body: clamp(0.9375rem, 1.05vw, 1.0625rem);
+  --fs-small: 0.8125rem;
+  --fs-meta: 0.6875rem;
+
+  --tracking-display: -0.045em;
+  --tracking-tight: -0.025em;
+  --tracking-meta: 0.14em;
+
+  /* --- Space ------------------------------------------------------------- */
+  --gutter: clamp(1.25rem, 4vw, 4.5rem);
+  --section-y: clamp(5rem, 12vh, 11rem);
+  --max-w: 1680px;
+
+  /* --- Motion ------------------------------------------------------------ */
+  --ease-swiss: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 0.3s;
+  --dur: 0.6s;
+  --dur-slow: 1.1s;
+
+  color-scheme: light;
 }
 
-* {
+/* Dark is a genuine inversion, not a filter: warm near-black ground, bone type,
+   and a slightly hotter accent so it holds up against the dark. */
+:root[data-theme="dark"] {
+  --paper: #111110;
+  --paper-raised: #1a1917;
+  --paper-sunk: #0b0b0a;
+
+  --ink: #f4f1ea;
+  --ink-soft: #c4bfb2;
+  --ink-muted: #8b8579;
+  --ink-faint: #5f5a51;
+
+  --signal: #ff4a30;
+  --signal-soft: rgba(255, 74, 48, 0.16);
+
+  --rule: rgba(244, 241, 234, 0.18);
+  --rule-strong: rgba(244, 241, 234, 0.36);
+  --rule-faint: rgba(244, 241, 234, 0.08);
+
+  color-scheme: dark;
+}
+
+/* ==========================================================================
+   Reset
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-html, body {
-  background-color: var(--bg-primary);
-  color: var(--text-main);
-  font-family: var(--font-sans);
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: auto;
 }
 
 body {
-  min-height: 100vh;
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: 1.55;
+  font-synthesis-weight: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+  transition: background-color var(--dur) var(--ease-swiss),
+    color var(--dur) var(--ease-swiss);
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 500;
+  line-height: 0.92;
+  letter-spacing: var(--tracking-tight);
+  text-wrap: balance;
 }
-::-webkit-scrollbar-track {
-  background: var(--bg-primary);
+
+p {
+  text-wrap: pretty;
 }
-::-webkit-scrollbar-thumb {
-  background: #222;
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-cyan);
+
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
 }
 
 a {
   color: inherit;
   text-decoration: none;
-  cursor: none; /* Hide default cursor on links to use custom cursor */
 }
 
-button, input, textarea {
-  font-family: inherit;
-  cursor: none; /* Hide default cursor */
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
 }
 
-/* Lenis smooth scrolling requirement */
-html.lenis, html.lenis body {
+ul,
+ol {
+  list-style: none;
+}
+
+::selection {
+  background: var(--signal);
+  color: var(--paper);
+}
+
+/* Visible focus for keyboard users only — never removed outright. */
+:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+/* ==========================================================================
+   Typographic primitives
+   ========================================================================== */
+
+/* Small uppercase mono labels — the connective tissue of the whole layout. */
+.meta {
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  font-weight: 500;
+  letter-spacing: var(--tracking-meta);
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+
+.display {
+  font-size: var(--fs-display);
+  font-weight: 600;
+  line-height: 0.82;
+  letter-spacing: var(--tracking-display);
+  font-variation-settings: "wdth" 100;
+}
+
+/* ==========================================================================
+   Layout
+   ========================================================================== */
+
+.shell {
+  width: 100%;
+  max-width: var(--max-w);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* The 12-column field every section aligns to. */
+.grid12 {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: clamp(0.75rem, 1.5vw, 1.75rem);
+}
+
+@media (max-width: 860px) {
+  .grid12 {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+.rule {
+  height: 1px;
+  width: 100%;
+  background: var(--rule);
+  border: 0;
+}
+
+/* ==========================================================================
+   Lenis
+   ========================================================================== */
+
+html.lenis,
+html.lenis body {
   height: auto;
 }
 
-.lenis-smooth {
+.lenis.lenis-smooth {
   scroll-behavior: auto !important;
 }
 
-.lenis-smooth [data-lenis-prevent] {
+.lenis.lenis-smooth [data-lenis-prevent] {
   overscroll-behavior: contain;
 }
 
-.lenis-stopped {
+.lenis.lenis-stopped {
   overflow: hidden;
 }
 
-.lenis-scrolling iframe {
+.lenis.lenis-scrolling iframe {
   pointer-events: none;
 }
 
-/* Utilities */
-.container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 2rem;
+/* ==========================================================================
+   Scrollbar
+   ========================================================================== */
+
+::-webkit-scrollbar {
+  width: 10px;
 }
 
-.glow-text {
-  text-shadow: 0 0 10px var(--accent-glow);
+::-webkit-scrollbar-track {
+  background: var(--paper);
 }
 
-.glass {
-  background: var(--glass-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-glow);
+::-webkit-scrollbar-thumb {
+  background: var(--rule-strong);
 }
 
-.gradient-text {
-  background: linear-gradient(135deg, var(--text-main) 30%, var(--accent-cyan) 70%, var(--accent-purple) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+::-webkit-scrollbar-thumb:hover {
+  background: var(--signal);
 }
 
-/* Custom Cursor Hide */
-.custom-cursor-active, 
-.custom-cursor-active * {
-  cursor: none !important;
+/* ==========================================================================
+   Custom cursor — only on real pointers, never on touch or for reduced motion
+   ========================================================================== */
+
+html.cursor-active,
+html.cursor-active a,
+html.cursor-active button,
+html.cursor-active [data-hover] {
+  cursor: none;
+}
+
+/* ==========================================================================
+   Motion preferences
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Elements that animate in start hidden, but only once JS has confirmed it can
+   run. Without this a JS failure would leave the page permanently blank. */
+html.js-ready [data-reveal] {
+  visibility: hidden;
 }
