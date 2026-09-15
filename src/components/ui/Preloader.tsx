@@ -4,8 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import { gsap, prefersReducedMotion } from "@/lib/gsap";
 import styles from "./Preloader.module.css";
 
-const COLUMNS_DESKTOP = 6;
-const COLUMNS_MOBILE = 3;
+/* Fixed rather than viewport-derived: deriving it on the client would render a
+   different number of panels than the server did, and the count reads fine at
+   every width. */
+const COLUMNS = 6;
 
 /** Shown beside the counter so the wait reads as work, not as a stall. */
 const STAGES = [
@@ -25,16 +27,6 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
 
   const [count, setCount] = useState(0);
   const [stage, setStage] = useState(STAGES[0].label);
-  const [columns, setColumns] = useState(COLUMNS_DESKTOP);
-
-  // Decide the column count before paint so the panels never visibly reflow.
-  useEffect(() => {
-    setColumns(
-      window.matchMedia("(max-width: 640px)").matches
-        ? COLUMNS_MOBILE
-        : COLUMNS_DESKTOP
-    );
-  }, []);
 
   useEffect(() => {
     // Reduced motion: no theatre, just get out of the way.
@@ -125,9 +117,9 @@ export default function Preloader({ onComplete }: { onComplete: () => void }) {
       <div
         ref={panelsRef}
         className={styles.panels}
-        style={{ "--cols": columns } as React.CSSProperties}
+        style={{ "--cols": COLUMNS } as React.CSSProperties}
       >
-        {Array.from({ length: columns }).map((_, i) => (
+        {Array.from({ length: COLUMNS }).map((_, i) => (
           <div key={i} className={styles.panel} />
         ))}
       </div>

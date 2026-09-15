@@ -4,7 +4,11 @@ import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
 
 interface MagneticProps {
-  children: React.ReactElement<any>;
+  /* Must accept a ref and arbitrary data attributes — cloneElement attaches
+     both to track the pointer and mark the element for the custom cursor. */
+  children: React.ReactElement<
+    { ref?: React.Ref<HTMLElement> } & Record<string, unknown>
+  >;
 }
 
 export default function Magnetic({ children }: MagneticProps) {

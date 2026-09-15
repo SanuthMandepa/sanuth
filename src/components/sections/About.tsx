@@ -1,128 +1,159 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
+import { gsap, SplitText, prefersReducedMotion } from "@/lib/gsap";
+import { profile, skillGroups } from "@/data/content";
 import styles from "./About.module.css";
-import gsap from "gsap";
 
-const skills = [
-  "Python",
-  "JavaScript",
-  "TypeScript",
-  "Java",
-  "React.js",
-  "Next.js",
-  "Node.js",
-  "Flask",
-  "PyTorch",
-  "Docker",
-  "MongoDB",
-  "PostgreSQL",
-  "MySQL",
-  "Git / GitHub",
-  "Google Cloud Run",
-  "OpenAI API",
-  "LangChain",
-  "Figma",
-  "GSAP",
-  "Tailwind CSS",
-  "WordPress",
-  "Postman",
+const FACTS = [
+  { label: "Based in", value: profile.location },
+  { label: "Degree", value: "BEng (Hons), 2:1" },
+  { label: "Placement", value: "12 months, completed" },
+  { label: "Status", value: "Open to graduate roles" },
 ];
 
 export default function About() {
-  const cardRef = useRef<HTMLDivElement>(null);
+  const rootRef = useRef<HTMLElement>(null);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const card = cardRef.current;
-    if (!card) return;
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
 
-    const { left, top, width, height } = card.getBoundingClientRect();
-    const x = e.clientX - left - width / 2;
-    const y = e.clientY - top - height / 2;
+    if (prefersReducedMotion()) return;
 
-    const rotateX = -(y / (height / 2)) * 12;
-    const rotateY = (x / (width / 2)) * 12;
+    const ctx = gsap.context(() => {
+      const splits: SplitText[] = [];
 
-    gsap.to(card, {
-      rotateX,
-      rotateY,
-      transformPerspective: 1000,
-      ease: "power2.out",
-      duration: 0.4,
-    });
-  };
+      // The lead paragraph reveals line by line, masked.
+      const lead = root.querySelector<HTMLElement>(`.${styles.bioLead}`);
+      if (lead) {
+        const split = new SplitText(lead, {
+          type: "lines",
+          linesClass: "aboutLine",
+          mask: "lines",
+        });
+        splits.push(split);
 
-  const handleMouseLeave = () => {
-    const card = cardRef.current;
-    if (!card) return;
+        gsap.from(split.lines, {
+          yPercent: 110,
+          duration: 1.1,
+          ease: "swiss",
+          stagger: 0.08,
+          scrollTrigger: { trigger: lead, start: "top 85%" },
+        });
+      }
 
-    gsap.to(card, {
-      rotateX: 0,
-      rotateY: 0,
-      ease: "power2.out",
-      duration: 0.5,
-    });
-  };
+      gsap.from(`.${styles.bioBody}, .${styles.factRow}`, {
+        y: 26,
+        opacity: 0,
+        duration: 0.9,
+        stagger: 0.08,
+        scrollTrigger: { trigger: `.${styles.top}`, start: "top 70%" },
+      });
+
+      // Each skill row wipes in as the matrix scrolls past.
+      gsap.utils.toArray<HTMLElement>(`.${styles.group}`).forEach((row) => {
+        gsap.from(row.querySelectorAll(`.${styles.skill}`), {
+          opacity: 0,
+          y: 14,
+          duration: 0.6,
+          stagger: 0.015,
+          scrollTrigger: { trigger: row, start: "top 90%" },
+        });
+      });
+
+      gsap.fromTo(
+        `.${styles.portraitImg}`,
+        { yPercent: -6 },
+        {
+          yPercent: 6,
+          ease: "none",
+          scrollTrigger: {
+            trigger: `.${styles.portraitCol}`,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: true,
+          },
+        }
+      );
+
+      return () => splits.forEach((s) => s.revert());
+    }, root);
+
+    return () => ctx.revert();
+  }, []);
+
+  const [lead, ...rest] = profile.bio;
 
   return (
-    <section id="about" className={styles.about}>
-      <div className={styles.container}>
-        <div className={styles.grid}>
-          {/* Interactive 3D Card */}
-          <div
-            className={styles.imageWrapper}
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
-          >
-            <div ref={cardRef} className={`${styles.imageCard} glass`}>
-              <div className={styles.imageContainer}>
-                <Image
-                  src="/me.png"
-                  alt="Sanuth Mandepa"
-                  fill
-                  className={styles.image}
-                  sizes="(max-width: 768px) 100vw, 400px"
-                  priority
-                />
-              </div>
-            </div>
-          </div>
+    <section ref={rootRef} id="about" className={`${styles.about} shell`}>
+      <header className={styles.header}>
+        <h2 className={styles.headerTitle}>About</h2>
+        <span className="meta">02 — Profile</span>
+      </header>
 
-          {/* Description Text */}
-          <div className={styles.textCard}>
-            <span className={styles.tag}>About Me</span>
-            <h2 className={styles.title}>
-              SOFTWARE <span className="gradient-text">ENGINEER</span>
-            </h2>
-            <p className={styles.bio}>
-              I&apos;m a final-year Software Engineering undergraduate at the University of
-              Westminster (delivered by IIT, Sri Lanka), passionate about turning complex
-              problems into seamless, reliable user experiences.
+      <div className={styles.top}>
+        <div className={styles.bio}>
+          <p className={styles.bioLead}>{lead}</p>
+          {rest.map((para, i) => (
+            <p key={i} className={styles.bioBody}>
+              {para}
             </p>
-            <p className={styles.bio}>
-              With a year of industry experience at Weblook International as a Web Designer
-              and hands-on work building full-stack projects — from AI-powered interview platforms
-              to deep learning medical diagnostics — I&apos;ve developed a versatile foundation spanning
-              UI/UX design, backend logic, ML integration, and containerised deployment.
-            </p>
-            <p className={styles.bio}>
-              I thrive in collaborative agile environments. My greatest assets are
-              adaptability and a relentless drive to learn.
-            </p>
+          ))}
 
-            <div className={styles.skillsSection}>
-              <h3 className={styles.skillsTitle}>Tech Stack</h3>
-              <div className={styles.skillsGrid}>
-                {skills.map((skill) => (
-                  <span key={skill} className={`${styles.skillPill} glass`} data-hover>
-                    {skill}
-                  </span>
-                ))}
+          <dl className={styles.factRow}>
+            {FACTS.map((f) => (
+              <div key={f.label} className={styles.fact}>
+                <dt className="meta">{f.label}</dt>
+                <dd className={styles.factValue}>{f.value}</dd>
               </div>
-            </div>
-          </div>
+            ))}
+          </dl>
         </div>
+
+        <figure className={styles.portraitCol}>
+          <div className={styles.portrait} data-hover data-cursor="Hi">
+            <Image
+              src="/me.png"
+              alt={`${profile.name}, ${profile.title}`}
+              fill
+              className={styles.portraitImg}
+              sizes="(max-width: 860px) 320px, 30vw"
+            />
+          </div>
+          <figcaption className={styles.portraitCaption}>
+            <span className="meta">{profile.name}</span>
+            <span className="meta">Fig. 01</span>
+          </figcaption>
+        </figure>
+      </div>
+
+      <div className={styles.matrix}>
+        <div className={styles.matrixHead}>
+          <span className="meta">Technical skills</span>
+          <span className="meta">
+            {skillGroups.reduce((n, g) => n + g.items.length, 0)} entries
+          </span>
+        </div>
+
+        {skillGroups.map((group, i) => (
+          <div key={group.label} className={styles.group}>
+            <h3 className={styles.groupLabel}>
+              <span className="meta">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <span className="meta">{group.label}</span>
+            </h3>
+            <div className={styles.groupItems}>
+              {group.items.map((item) => (
+                <span key={item} className={styles.skill}>
+                  {item}
+                </span>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
     </section>
   );

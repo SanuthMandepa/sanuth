@@ -18,10 +18,13 @@ const archivo = Archivo({
   variable: "--font-archivo",
 });
 
+/* Note the variable name: it must NOT collide with the `--font-mono` stack
+   composed in globals.css, or that declaration becomes self-referential and
+   resolves to nothing. */
 const mono = JetBrains_Mono({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-mono",
+  variable: "--font-jetbrains",
 });
 
 const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "";

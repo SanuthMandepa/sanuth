@@ -137,7 +137,6 @@
   align-items: end;
   padding-top: clamp(1.75rem, 4vh, 3rem);
   border-top: 1px solid var(--rule);
-  margin-top: auto;
 }
 
 .statement {
@@ -240,21 +239,21 @@
 
 /* --- Scroll cue ---------------------------------------------------------- */
 
+/* Sits in the gap above the lower row, right-aligned, so it can never collide
+   with the content the way a centre-floated cue does. */
 .scrollCue {
-  position: absolute;
-  bottom: var(--gutter);
-  left: 50%;
-  transform: translateX(-50%);
+  position: relative;
   z-index: 1;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding-bottom: 1.1rem;
 }
 
 .scrollTrack {
-  width: 1px;
-  height: 3.5rem;
+  width: clamp(3rem, 6vw, 5.5rem);
+  height: 1px;
   background: var(--rule);
   position: relative;
   overflow: hidden;
@@ -262,18 +261,18 @@
 
 .scrollThumb {
   position: absolute;
-  inset-inline: 0;
-  height: 40%;
-  background: var(--ink);
-  animation: travel 2.2s var(--ease-swiss) infinite;
+  inset-block: 0;
+  width: 40%;
+  background: var(--signal);
+  animation: travel 2.4s var(--ease-swiss) infinite;
 }
 
 @keyframes travel {
   0% {
-    transform: translateY(-100%);
+    transform: translateX(-100%);
   }
   100% {
-    transform: translateY(250%);
+    transform: translateX(250%);
   }
 }
 
@@ -308,6 +307,18 @@
   }
   .scrollCue {
     display: none;
+  }
+  /* Below this width the stacked lower row already fills the screen, so letting
+     the name block grow only opens a dead gap in the middle. */
+  .middle {
+    flex: 0 0 auto;
+    padding-block: clamp(2rem, 9vh, 4rem) clamp(2.5rem, 10vh, 5rem);
+  }
+  .lower {
+    row-gap: 1.75rem;
+  }
+  .top {
+    gap: 0.75rem 1.5rem;
   }
 }
 

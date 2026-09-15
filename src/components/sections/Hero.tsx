@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { gsap, SplitText, ScrollTrigger, prefersReducedMotion } from "@/lib/gsap";
+import { gsap, SplitText, prefersReducedMotion } from "@/lib/gsap";
 import { profile } from "@/data/content";
 import styles from "./Hero.module.css";
 
@@ -35,7 +35,9 @@ export default function Hero({ ready }: { ready: boolean }) {
 
       const lines = gsap.utils.toArray<HTMLElement>(`.${styles.lineInner}`);
       lines.forEach((line) => {
-        splits.push(new SplitText(line, { type: "chars", charsClass: "heroChar" }));
+        splits.push(
+          new SplitText(line, { type: "words,chars", charsClass: "heroChar" })
+        );
       });
 
       const chars = gsap.utils.toArray<HTMLElement>(".heroChar");
@@ -136,6 +138,13 @@ export default function Hero({ ready }: { ready: boolean }) {
         </h1>
       </div>
 
+      <div className={`${styles.scrollCue} shell`} aria-hidden="true">
+        <span className="meta">Scroll</span>
+        <div className={styles.scrollTrack}>
+          <div className={styles.scrollThumb} />
+        </div>
+      </div>
+
       <div className={`${styles.lower} shell`}>
         <p className={styles.statement}>
           Software engineer working across the stack — from{" "}
@@ -175,12 +184,6 @@ export default function Hero({ ready }: { ready: boolean }) {
         </nav>
       </div>
 
-      <div className={styles.scrollCue} aria-hidden="true">
-        <div className={styles.scrollTrack}>
-          <div className={styles.scrollThumb} />
-        </div>
-        <span className="meta">Scroll</span>
-      </div>
     </section>
   );
 }

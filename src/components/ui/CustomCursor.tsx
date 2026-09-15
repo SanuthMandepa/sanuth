@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap, prefersReducedMotion } from "@/lib/gsap";
 
 /**
@@ -11,10 +11,23 @@ import { gsap, prefersReducedMotion } from "@/lib/gsap";
 export default function CustomCursor() {
   const ringRef = useRef<HTMLDivElement>(null);
   const labelRef = useRef<HTMLSpanElement>(null);
+  /* Gate on mount rather than bailing out of the effect: if the element is
+     rendered at all on a touch device it sits visible in the top-left corner,
+     because nothing ever moves it. */
+  const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
-    const isCoarse = window.matchMedia("(pointer: coarse)").matches;
-    if (isCoarse || prefersReducedMotion()) return;
+    if (window.matchMedia("(pointer: coarse)").matches) return;
+    if (prefersReducedMotion()) return;
+    // Deliberately set after mount rather than during render: pointer type is
+    // unknowable on the server, and deriving it at render time would make the
+    // markup disagree with the server's and break hydration.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setEnabled(true);
+  }, []);
+
+  useEffect(() => {
+    if (!enabled) return;
 
     const ring = ringRef.current;
     const label = labelRef.current;
@@ -75,7 +88,9 @@ export default function CustomCursor() {
       window.removeEventListener("pointerout", onOut);
       document.removeEventListener("pointerleave", onLeave);
     };
-  }, []);
+  }, [enabled]);
+
+  if (!enabled) return null;
 
   return (
     <div

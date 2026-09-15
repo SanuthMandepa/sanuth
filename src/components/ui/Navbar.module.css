@@ -1,114 +1,207 @@
-.navbar {
+.nav {
   position: fixed;
-  top: 1.5rem;
-  left: 50%;
-  transform: translateX(-50%);
-  width: calc(100% - 4rem);
-  max-width: 1200px;
-  height: 4.5rem;
-  border-radius: 2.25rem;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 90;
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
-  padding: 0 2.5rem;
-  z-index: 1000;
-  transition: all 0.3s ease;
-}
-
-.logoContainer {
-  display: flex;
-  align-items: center;
-}
-
-.logo {
-  font-size: 1.5rem;
-  font-weight: 900;
-  letter-spacing: -0.05em;
-  color: var(--text-main);
-  display: inline-block;
-}
-
-.logoDot {
-  color: var(--accent-cyan);
-  text-shadow: 0 0 10px var(--accent-cyan);
-}
-
-.navLinks {
-  display: flex;
-  align-items: center;
   gap: 1.5rem;
+  padding: clamp(0.85rem, 1.6vw, 1.35rem) var(--gutter);
+  max-width: var(--max-w);
+  margin-inline: auto;
+  /* Hidden until the hero has been read — the hero's own top row does this job
+     while it is on screen, and two competing meta rows would fight. */
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-100%);
+  /* Forces a stacking context of its own, so the backdrop below cannot fall
+     behind the page content in the root context. */
+  isolation: isolate;
 }
 
-.navLink {
-  background: none;
-  border: none;
-  color: var(--text-muted);
-  font-size: 0.95rem;
-  font-weight: 500;
-  padding: 0.5rem 1rem;
-  transition: color 0.3s ease;
+/* Every direct child sits above the backdrop layer. */
+.nav > * {
+  position: relative;
+  z-index: 1;
 }
 
-.navLink:hover {
-  color: var(--text-main);
+.nav::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  /* Solid, not frosted. Even at 96% the display type underneath ghosted
+     through and collided with the links, and a blurred pane belongs to the
+     glassmorphism language this design replaces. A hairline rule does the job. */
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+  z-index: 0;
 }
 
-.badgeContainer {
+.navVisible {
+  pointer-events: auto;
+}
+
+/* --- Mark ---------------------------------------------------------------- */
+
+.mark {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.1em;
+  font-size: clamp(0.95rem, 1.3vw, 1.15rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.markDot {
+  color: var(--signal);
+}
+
+/* --- Section list -------------------------------------------------------- */
+
+.list {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  background: rgba(0, 240, 255, 0.05);
-  border: 1px solid rgba(0, 240, 255, 0.15);
-  padding: 0.45rem 1.1rem;
-  border-radius: 1.5rem;
+  gap: clamp(1rem, 2.2vw, 2.25rem);
 }
 
-.badgeDot {
-  width: 8px;
-  height: 8px;
-  background-color: var(--accent-cyan);
-  border-radius: 50%;
-  display: inline-block;
-  box-shadow: 0 0 8px var(--accent-cyan);
-  animation: pulse 1.2s infinite alternate;
-}
-
-.badgeText {
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
+.link {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  letter-spacing: var(--tracking-meta);
   text-transform: uppercase;
-  color: var(--accent-cyan);
+  color: var(--ink-muted);
+  padding-block: 0.35rem;
+  transition: color var(--dur-fast) var(--ease-swiss);
 }
 
-@keyframes pulse {
-  from {
-    transform: scale(0.8);
-    opacity: 0.6;
-  }
-  to {
-    transform: scale(1.2);
-    opacity: 1;
-  }
+.link:hover {
+  color: var(--ink);
 }
 
-@media (max-width: 768px) {
-  .navbar {
-    top: 1rem;
-    width: calc(100% - 2rem);
-    padding: 0 1.25rem;
-  }
-  
-  .navLinks {
-    gap: 0.5rem;
-  }
-  
-  .navLink {
-    padding: 0.4rem 0.6rem;
-    font-size: 0.85rem;
-  }
-  
-  .badgeContainer {
+.linkNum {
+  font-size: 0.85em;
+  opacity: 0.6;
+}
+
+/* Underline grows from the left on hover and stays put when active. */
+.link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--signal);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--dur) var(--ease-swiss);
+}
+
+.link:hover::after {
+  transform: scaleX(1);
+}
+
+.linkActive {
+  color: var(--ink);
+}
+
+.linkActive::after {
+  transform: scaleX(1);
+}
+
+/* --- Theme toggle -------------------------------------------------------- */
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  color: var(--ink);
+  transition: border-color var(--dur-fast) var(--ease-swiss),
+    background-color var(--dur-fast) var(--ease-swiss);
+}
+
+.toggle:hover {
+  border-color: var(--ink);
+  background: var(--signal-soft);
+}
+
+/* --- Mobile -------------------------------------------------------------- */
+
+.menuBtn {
+  display: none;
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  letter-spacing: var(--tracking-meta);
+  text-transform: uppercase;
+  color: var(--ink);
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.burger {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 18px;
+}
+
+.burger span {
+  height: 1px;
+  background: currentColor;
+  transition: transform var(--dur) var(--ease-swiss);
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 89;
+  background: var(--paper);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: var(--gutter);
+  /* Clipped rather than hidden so the items can slide up out of view. */
+  clip-path: inset(0 0 100% 0);
+}
+
+.overlayLink {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  padding-block: 0.6rem;
+  border-bottom: 1px solid var(--rule-faint);
+  font-size: clamp(2rem, 11vw, 3.5rem);
+  font-weight: 600;
+  letter-spacing: var(--tracking-display);
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.overlayNum {
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  letter-spacing: var(--tracking-meta);
+  color: var(--ink-muted);
+}
+
+@media (max-width: 860px) {
+  .list {
     display: none;
+  }
+  .menuBtn {
+    display: inline-flex;
   }
 }

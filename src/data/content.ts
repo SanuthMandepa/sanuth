@@ -262,6 +262,80 @@ export const timeline: TimelineEntry[] = [
   },
 ];
 
+export interface Certification {
+  name: string;
+  issuer: string;
+  /** Present when the CV notes a partial completion. */
+  note: string | null;
+  /** TODO(sanuth): the CV links each of these; paste the URLs here. */
+  url: string | null;
+}
+
+/** All eleven, in CV order. */
+export const certifications: Certification[] = [
+  {
+    name: "AWS Educate: Introduction to Cloud 101",
+    issuer: "Amazon Web Services",
+    note: null,
+    url: null,
+  },
+  { name: "Version Control", issuer: "Meta", note: null, url: null },
+  {
+    name: "Postman API Fundamentals Student Expert",
+    issuer: "Postman",
+    note: null,
+    url: null,
+  },
+  {
+    name: "Introduction to Generative AI",
+    issuer: "Google",
+    note: null,
+    url: null,
+  },
+  {
+    name: "Foundations of Project Management",
+    issuer: "Google",
+    note: null,
+    url: null,
+  },
+  {
+    name: "Python for Everybody Specialization",
+    issuer: "University of Michigan (Coursera)",
+    note: "3 of 5 courses",
+    url: null,
+  },
+  {
+    name: "What Is Generative AI",
+    issuer: "LinkedIn Learning",
+    note: null,
+    url: null,
+  },
+  {
+    name: "React.js Essential Training",
+    issuer: "LinkedIn Learning",
+    note: null,
+    url: null,
+  },
+  {
+    name: "PHP Essential Training",
+    issuer: "LinkedIn Learning",
+    note: null,
+    url: null,
+  },
+  {
+    name: "Google UX Design Professional Certificate",
+    issuer: "Google (Coursera)",
+    note: "2 of 8 courses",
+    url: null,
+  },
+  {
+    name: "The Fundamentals of Digital Marketing",
+    issuer: "Google Digital Garage",
+    note: null,
+    url: null,
+  },
+];
+
 /** Grouped exactly as the CV groups them. */
 export const skillGroups = [
   {

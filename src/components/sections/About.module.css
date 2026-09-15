@@ -1,144 +1,204 @@
 .about {
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 8rem 2rem;
-  background-color: var(--bg-secondary);
   position: relative;
-  z-index: 2;
+  padding-block: var(--section-y);
 }
 
-.container {
-  width: 100%;
-  max-width: 1200px;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: 1.1fr 1.3fr;
-  gap: 6rem;
-  align-items: center;
-}
-
-.imageWrapper {
-  perspective: 1000px;
+.header {
   display: flex;
-  justify-content: center;
-  width: 100%;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--ink);
+  margin-bottom: clamp(2.5rem, 6vw, 5rem);
 }
 
-.imageCard {
-  width: 100%;
-  max-width: 400px;
-  height: 520px;
-  padding: 1.25rem;
-  border-radius: 1.5rem;
-  transform-style: preserve-3d;
-  box-shadow: var(--glass-glow);
-}
-
-.imageContainer {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  border-radius: 1rem;
-  overflow: hidden;
-  transform: translateZ(20px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-}
-
-.image {
-  object-fit: cover;
-  transition: transform 0.5s ease;
-}
-
-.imageCard:hover .image {
-  transform: scale(1.05);
-}
-
-.textCard {
-  display: flex;
-  flex-direction: column;
-}
-
-.tag {
-  font-size: 0.75rem;
-  font-weight: 700;
+.headerTitle {
+  font-size: var(--fs-h2);
+  font-weight: 600;
+  letter-spacing: var(--tracking-display);
   text-transform: uppercase;
-  letter-spacing: 0.25em;
-  color: var(--accent-purple);
-  margin-bottom: 0.75rem;
+  font-variation-settings: "wdth" 90;
 }
 
-.title {
-  font-size: clamp(2.5rem, 5vw, 4rem);
-  font-weight: 900;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
-  margin-bottom: 2rem;
+/* --- Bio + portrait ------------------------------------------------------ */
+
+.top {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: clamp(0.75rem, 1.5vw, 1.75rem);
+  row-gap: clamp(2.5rem, 5vw, 4rem);
+  align-items: start;
 }
 
 .bio {
-  font-size: 1.1rem;
-  line-height: 1.7;
-  color: var(--text-muted);
-  margin-bottom: 1.5rem;
-  font-weight: 400;
-}
-
-.skillsSection {
-  margin-top: 2rem;
-}
-
-.skillsTitle {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--text-main);
-  margin-bottom: 1.25rem;
-  letter-spacing: 0.05em;
-}
-
-.skillsGrid {
+  grid-column: 1 / span 7;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 1.35rem;
+}
+
+/* The opening line carries the section — set noticeably larger than the rest. */
+.bioLead {
+  font-size: var(--fs-h3);
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: var(--tracking-tight);
+  color: var(--ink);
+  max-width: 30ch;
+}
+
+.bioBody {
+  font-size: var(--fs-body);
+  line-height: 1.65;
+  color: var(--ink-soft);
+  max-width: 54ch;
+}
+
+.factRow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 1.25rem;
+  padding-top: 1.5rem;
+  margin-top: 0.5rem;
+  border-top: 1px solid var(--rule-faint);
+}
+
+.fact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.factValue {
+  font-size: var(--fs-body);
+  color: var(--ink);
+  letter-spacing: var(--tracking-tight);
+}
+
+/* --- Portrait ------------------------------------------------------------ */
+
+.portraitCol {
+  grid-column: 9 / span 4;
+}
+
+.portrait {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: var(--paper-sunk);
+  border: 1px solid var(--rule);
+}
+
+/* Oversized inside a fixed frame so the parallax moves the image, not the box.
+   Moving the frame itself pushed the portrait over its own caption. */
+.portraitImg {
+  width: 100%;
+  height: 116%;
+  top: -8%;
+  object-fit: cover;
+  will-change: transform;
+  /* Pulls the photo into the palette instead of letting it fight the ground:
+     desaturated, lifted contrast, warmed to match the paper. */
+  filter: grayscale(1) contrast(1.12) brightness(1.02) sepia(0.14);
+  transition: filter var(--dur-slow) var(--ease-swiss);
+}
+
+.portrait:hover .portraitImg {
+  filter: grayscale(0) contrast(1) brightness(1) sepia(0);
+}
+
+.portraitCaption {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 0.7rem;
+}
+
+/* --- Skill matrix -------------------------------------------------------- */
+
+.matrix {
+  margin-top: clamp(3.5rem, 8vw, 6rem);
+  border-top: 1px solid var(--ink);
+}
+
+.matrixHead {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 1rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.group {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+  column-gap: clamp(1rem, 3vw, 3rem);
+  row-gap: 0.85rem;
+  padding-block: clamp(1.25rem, 2.5vw, 1.75rem);
+  border-bottom: 1px solid var(--rule-faint);
+  align-items: start;
+}
+
+.group:last-child {
+  border-bottom: none;
+}
+
+.groupLabel {
+  display: flex;
+  align-items: baseline;
   gap: 0.75rem;
 }
 
-.skillPill {
-  font-size: 0.85rem;
-  font-weight: 600;
-  padding: 0.6rem 1.2rem;
-  border-radius: 2rem;
-  color: var(--text-main);
-  transition: all 0.3s ease;
-  border: 1px solid var(--glass-border);
+.groupItems {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.5rem;
 }
 
-.skillPill:hover {
-  border-color: var(--accent-cyan);
-  background: rgba(0, 240, 255, 0.05);
-  box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
-  transform: translateY(-2px);
+.skill {
+  font-size: var(--fs-small);
+  letter-spacing: -0.01em;
+  color: var(--ink-soft);
+  padding: 0.2rem 0.6rem;
+  border: 1px solid var(--rule);
+  white-space: nowrap;
+  transition: color var(--dur-fast) var(--ease-swiss),
+    border-color var(--dur-fast) var(--ease-swiss);
 }
 
-@media (max-width: 992px) {
-  .grid {
-    grid-template-columns: 1fr;
-    gap: 4rem;
+.skill:hover {
+  color: var(--signal);
+  border-color: var(--signal);
+}
+
+/* --- Responsive ---------------------------------------------------------- */
+
+@media (max-width: 1100px) {
+  .bio {
+    grid-column: 1 / span 7;
   }
-  
-  .imageCard {
-    height: 480px;
+  .portraitCol {
+    grid-column: 9 / span 4;
   }
 }
 
-@media (max-width: 576px) {
-  .about {
-    padding: 6rem 1.5rem;
+@media (max-width: 860px) {
+  .top {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
   }
-  
-  .imageCard {
-    height: 380px;
+  .bio,
+  .portraitCol {
+    grid-column: 1 / -1;
+  }
+  /* Portrait first on small screens — it reads as an introduction there. */
+  .portraitCol {
+    order: -1;
+    max-width: 320px;
+  }
+  .group {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 0.75rem;
   }
 }

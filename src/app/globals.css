@@ -27,10 +27,12 @@
   /* --- Type -------------------------------------------------------------- */
   --font-sans: var(--font-archivo), "Helvetica Neue", Helvetica, Arial,
     sans-serif;
-  --font-mono: var(--font-mono), ui-monospace, "SF Mono", Menlo, monospace;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SF Mono", Menlo, monospace;
 
   /* Fluid scale. Display is deliberately enormous — that is the whole idiom. */
-  --fs-display: clamp(3.25rem, 13vw, 13.5rem);
+  /* vw-led on purpose: the display line should fill the measure at every width,
+     so the floor stays low and lets the viewport drive it. */
+  --fs-display: clamp(2.5rem, 16vw, 13.5rem);
   --fs-h1: clamp(2.5rem, 7.5vw, 6.5rem);
   --fs-h2: clamp(1.875rem, 4.5vw, 3.75rem);
   --fs-h3: clamp(1.25rem, 2.2vw, 1.875rem);
@@ -211,6 +213,11 @@ ol {
   width: 100%;
   background: var(--rule);
   border: 0;
+}
+
+/* Keeps a jumped-to section clear of the fixed bar instead of landing under it. */
+section[id] {
+  scroll-margin-top: clamp(4rem, 7vw, 5.5rem);
 }
 
 /* ==========================================================================
