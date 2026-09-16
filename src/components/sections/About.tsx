@@ -5,6 +5,7 @@ import Image from "next/image";
 import { gsap } from "@/lib/gsap";
 import { getIcon } from "@/lib/icons";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useSpotlight, useTilt } from "@/components/ui/Interactive";
 import { profile, skillGroups } from "@/data/content";
 import styles from "./About.module.css";
 
@@ -17,6 +18,9 @@ const FACTS = [
 export default function About() {
   const rootRef = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
+
+  useSpotlight(rootRef, `.${styles.skillCard}`);
+  useTilt(rootRef, `.${styles.skillCard}`, 5);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -116,7 +120,7 @@ export default function About() {
           {skillGroups.map((group) => {
             const Icon = getIcon(group.icon);
             return (
-              <div key={group.label} className={styles.skillCard}>
+              <div key={group.label} className={styles.skillCard} data-spotlight>
                 <span className={styles.skillIcon}>
                   <Icon size={30} strokeWidth={2} />
                 </span>

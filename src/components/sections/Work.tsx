@@ -6,6 +6,7 @@ import { ArrowUpRight, ImageIcon } from "lucide-react";
 import { gsap } from "@/lib/gsap";
 import { getIcon, GithubMark } from "@/lib/icons";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useSpotlight, SwapText } from "@/components/ui/Interactive";
 import { projects, type Project } from "@/data/content";
 import styles from "./Work.module.css";
 
@@ -19,6 +20,9 @@ const STATUS: Record<Project["status"], string> = {
 export default function Work() {
   const rootRef = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
+
+  // Glow that tracks the cursor across whichever card is on top of the stack.
+  useSpotlight(rootRef, `.${styles.card}`);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -77,7 +81,7 @@ export default function Work() {
                 className={styles.sticky}
                 style={{ "--i": i } as React.CSSProperties}
               >
-                <article className={styles.card}>
+                <article className={styles.card} data-spotlight>
                   <div className={styles.left}>
                     <div className={styles.head}>
                       <span className={styles.iconTile}>
@@ -148,7 +152,7 @@ export default function Work() {
                           rel="noreferrer"
                           className={styles.link}
                         >
-                          Live site
+                          <SwapText>Live site</SwapText>
                           <ArrowUpRight size={16} strokeWidth={2.5} />
                         </a>
                       ) : (

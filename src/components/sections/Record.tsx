@@ -5,12 +5,16 @@ import { Check } from "lucide-react";
 import { gsap } from "@/lib/gsap";
 import { getIcon } from "@/lib/icons";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useSpotlight, useTilt } from "@/components/ui/Interactive";
 import { timeline, certifications } from "@/data/content";
 import styles from "./Record.module.css";
 
 export default function Record() {
   const rootRef = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
+
+  useSpotlight(rootRef, `.${styles.entry}`);
+  useTilt(rootRef, `.${styles.entry}`, 4);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -58,6 +62,7 @@ export default function Record() {
                 className={`${styles.entry} ${
                   entry.kind === "honour" ? styles.entryFeature : ""
                 }`}
+                data-spotlight
               >
                 <span className={styles.icon}>
                   <Icon size={28} strokeWidth={2} />

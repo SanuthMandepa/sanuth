@@ -2,46 +2,55 @@
   position: relative;
   min-height: 100svh;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding-block: clamp(7rem, 14vh, 10rem) clamp(2.5rem, 6vh, 4rem);
+  align-items: center;
+  padding-block: clamp(6.5rem, 12vh, 9rem) clamp(2.5rem, 6vh, 4rem);
   overflow: hidden;
 }
 
-/* --- Gradient light behind everything ------------------------------------ */
+/* --- Gradient light ------------------------------------------------------ */
 
 .glow {
   position: absolute;
   border-radius: 50%;
   filter: blur(90px);
   pointer-events: none;
-  opacity: 0.5;
 }
 
 .glowA {
-  width: 46vw;
-  height: 46vw;
-  right: -8vw;
-  top: -10vw;
+  width: 44vw;
+  height: 44vw;
+  right: -6vw;
+  top: -12vw;
   background: var(--grad-warm);
+  opacity: 0.4;
 }
 
 .glowB {
-  width: 34vw;
-  height: 34vw;
+  width: 32vw;
+  height: 32vw;
   left: -10vw;
-  bottom: -12vw;
+  bottom: -14vw;
   background: linear-gradient(135deg, var(--o-300), var(--o-500));
-  opacity: 0.32;
+  opacity: 0.26;
 }
 
-.inner {
+/* --- Layout -------------------------------------------------------------- */
+
+.grid {
   position: relative;
   z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  gap: clamp(2rem, 4vw, 4rem);
+  align-items: center;
+  width: 100%;
+}
+
+.copy {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: clamp(1.25rem, 2.5vw, 1.75rem);
+  gap: clamp(1.1rem, 2vw, 1.6rem);
 }
 
 /* --- Availability pill --------------------------------------------------- */
@@ -50,13 +59,13 @@
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 0.5rem 1rem 0.5rem 0.6rem;
+  padding: 0.5rem 1rem 0.5rem 0.65rem;
   border-radius: 100px;
   background: var(--white);
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--line);
   font-size: var(--fs-sm);
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .pulse {
@@ -91,14 +100,11 @@
 
 .title {
   font-size: var(--fs-display);
-  font-weight: 800;
-  line-height: 0.92;
-  letter-spacing: -0.045em;
-  font-variation-settings: "wdth" 96;
-  max-width: 14ch;
-  /* Mask for the reveal: the inner span slides up into it. */
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.035em;
   overflow: hidden;
-  padding-bottom: 0.08em;
+  padding-bottom: 0.1em;
 }
 
 .titleInner {
@@ -115,7 +121,7 @@
 .lead {
   font-size: var(--fs-lead);
   color: var(--ink-soft);
-  max-width: 44ch;
+  max-width: 42ch;
   line-height: 1.55;
 }
 
@@ -125,19 +131,33 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.75rem;
-  margin-top: 0.5rem;
+  margin-top: 0.4rem;
 }
 
 .btn {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  padding: 0.95rem 1.5rem;
+  padding: 0.95rem 1.6rem;
   border-radius: 100px;
-  font-weight: 650;
+  font-weight: 600;
   font-size: var(--fs-sm);
-  transition: transform var(--fast) var(--ease),
+  overflow: hidden;
+  isolation: isolate;
+  transition: color var(--fast) var(--ease),
     box-shadow var(--fast) var(--ease);
+}
+
+/* Fill that grows from the pointer's side of the button. */
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  transform: scaleY(0);
+  transform-origin: bottom center;
+  transition: transform var(--mid) var(--ease);
 }
 
 .btnPrimary {
@@ -146,40 +166,49 @@
   box-shadow: var(--shadow-orange);
 }
 
+.btnPrimary::before {
+  background: var(--ink);
+}
+
+.btnPrimary:hover {
+  box-shadow: 0 26px 56px -14px rgba(255, 81, 0, 0.5);
+}
+
 .btnGhost {
   background: var(--white);
   border: 1px solid var(--line);
   box-shadow: var(--shadow-sm);
 }
 
-.btn:hover {
-  transform: translateY(-3px);
-}
-
-.btnPrimary:hover {
-  box-shadow: 0 24px 54px -12px rgba(255, 81, 0, 0.55);
+.btnGhost::before {
+  background: var(--grad);
 }
 
 .btnGhost:hover {
-  box-shadow: var(--shadow);
+  color: #fff;
+  border-color: transparent;
+}
+
+.btn:hover::before {
+  transform: scaleY(1);
 }
 
 .btn svg {
-  transition: transform var(--fast) var(--ease);
+  transition: transform var(--mid) var(--ease);
 }
 
 .btn:hover svg {
-  transform: translateX(3px);
+  transform: translateX(4px);
 }
 
-/* --- Stat row ------------------------------------------------------------ */
+/* --- Stats --------------------------------------------------------------- */
 
 .stats {
   display: flex;
   flex-wrap: wrap;
-  gap: clamp(1.5rem, 5vw, 4rem);
-  margin-top: clamp(1.5rem, 4vw, 3rem);
-  padding-top: clamp(1.5rem, 3vw, 2.25rem);
+  gap: clamp(1.25rem, 3vw, 2.75rem);
+  margin-top: clamp(0.75rem, 2vw, 1.5rem);
+  padding-top: clamp(1.25rem, 2.5vw, 1.75rem);
   border-top: 1px solid var(--line);
   width: 100%;
 }
@@ -187,18 +216,24 @@
 .stat {
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
+  gap: 0.1rem;
+  cursor: default;
 }
 
 .statValue {
-  font-size: clamp(1.75rem, 3.5vw, 2.75rem);
-  font-weight: 800;
+  font-size: clamp(1.6rem, 3vw, 2.5rem);
+  font-weight: 700;
   letter-spacing: -0.04em;
   line-height: 1;
   background: var(--grad);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  transition: transform var(--mid) var(--ease);
+}
+
+.stat:hover .statValue {
+  transform: translateY(-4px);
 }
 
 .statLabel {
@@ -206,9 +241,95 @@
   color: var(--ink-mute);
 }
 
-@media (max-width: 640px) {
-  .title {
-    max-width: 100%;
+/* --- WebGL portrait ------------------------------------------------------ */
+
+/* Stage, switcher and hint share one column so the controls always sit
+   directly under the portrait instead of wrapping to their own grid row. */
+.visual {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+.stage {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  max-height: 62vh;
+  width: 100%;
+  border-radius: var(--radius);
+  background: radial-gradient(
+    120% 90% at 50% 20%,
+    rgba(255, 176, 32, 0.18),
+    rgba(255, 246, 238, 0) 70%
+  );
+}
+
+.hint {
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  pointer-events: none;
+  text-align: center;
+}
+
+/* There is no cursor to move on a touch device. */
+@media (hover: none), (pointer: coarse) {
+  .hint {
+    display: none;
+  }
+}
+
+/* --- Mode switcher ------------------------------------------------------- */
+
+.modes {
+  display: inline-flex;
+  gap: 0.25rem;
+  padding: 0.3rem;
+  border-radius: 100px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+}
+
+.mode {
+  padding: 0.5rem 1rem;
+  border-radius: 100px;
+  font-size: var(--fs-label);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ink-soft);
+  transition: color var(--fast) var(--ease),
+    background var(--fast) var(--ease);
+}
+
+.mode:hover {
+  color: var(--ink);
+  background: var(--sand);
+}
+
+.modeActive,
+.modeActive:hover {
+  background: var(--grad);
+  color: #fff;
+}
+
+/* --- Responsive ---------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2rem;
+  }
+  .visual {
+    order: -1;
+  }
+  .stage {
+    max-width: 380px;
+    max-height: 48vh;
   }
   .btn {
     flex: 1 1 auto;

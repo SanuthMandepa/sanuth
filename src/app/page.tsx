@@ -8,6 +8,7 @@ import Work from "@/components/sections/Work";
 import About from "@/components/sections/About";
 import Record from "@/components/sections/Record";
 import Contact from "@/components/sections/Contact";
+import Footer from "@/components/sections/Footer";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);
@@ -25,6 +26,7 @@ export default function Home() {
         <Record />
         <Contact />
       </main>
+      <Footer />
     </>
   );
 }

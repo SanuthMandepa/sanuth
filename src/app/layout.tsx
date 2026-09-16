@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo } from "next/font/google";
+import { Outfit, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/ui/SmoothScroll";
 import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
@@ -7,14 +7,20 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { profile } from "@/data/content";
 
-/* One family across the whole site. Archivo carries a width axis as well as
-   weight, which covers everything from the display headline to small labels
-   without pulling in a second download. */
-const archivo = Archivo({
+/* Outfit carries everything structural, Playfair Display supplies the italic
+   accent on headlines. Both self-hosted by next/font, so no request reaches
+   Google from the visitor's browser. */
+const outfit = Outfit({
   subsets: ["latin"],
-  axes: ["wdth"],
   display: "swap",
-  variable: "--font-archivo",
+  variable: "--font-outfit",
+});
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  style: ["normal", "italic"],
+  display: "swap",
+  variable: "--font-playfair",
 });
 
 const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "";
@@ -65,7 +71,11 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={archivo.variable} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${outfit.variable} ${playfair.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         {/* Marks JS as live before paint, so [data-reveal] only hides itself
             when something is actually able to reveal it again. */}

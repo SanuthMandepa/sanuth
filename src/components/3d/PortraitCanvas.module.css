@@ -1,0 +1,20 @@
+.canvas {
+  position: absolute;
+  inset: 0;
+  /* The canvas must receive the pointer or the shaders have nothing to react
+     to, but it must not swallow clicks meant for the buttons beside it. */
+  touch-action: pan-y;
+}
+
+.fallback {
+  position: absolute;
+  inset: clamp(1rem, 3vw, 2.5rem);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--grad-soft);
+}
+
+.fallbackImg {
+  object-fit: cover;
+  filter: saturate(0.5) sepia(0.28) contrast(1.08);
+}

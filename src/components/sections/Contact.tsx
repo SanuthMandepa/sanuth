@@ -5,6 +5,7 @@ import { ArrowUpRight, Mail, Phone } from "lucide-react";
 import { GithubMark, LinkedinMark } from "@/lib/icons";
 import { gsap } from "@/lib/gsap";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useSpotlight, useTilt } from "@/components/ui/Interactive";
 import { profile } from "@/data/content";
 import styles from "./Contact.module.css";
 
@@ -42,6 +43,9 @@ const CHANNELS = [
 export default function Contact() {
   const rootRef = useRef<HTMLElement>(null);
   const reduced = useReducedMotion();
+
+  useSpotlight(rootRef, `.${styles.card}`);
+  useTilt(rootRef, `.${styles.card}`, 6);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -92,6 +96,7 @@ export default function Contact() {
               target={external ? "_blank" : undefined}
               rel={external ? "noreferrer" : undefined}
               className={styles.card}
+              data-spotlight
             >
               <span className={styles.cardIcon}>
                 <Icon size={28} />
@@ -105,25 +110,6 @@ export default function Contact() {
           ))}
         </div>
 
-        <footer className={styles.footer}>
-          <span>
-            © {new Date().getFullYear()} {profile.name}
-          </span>
-          <div className={styles.footerLinks}>
-            <a href="#work" className={styles.footerLink}>
-              Work
-            </a>
-            <a href="#about" className={styles.footerLink}>
-              About
-            </a>
-            <a href="#record" className={styles.footerLink}>
-              Record
-            </a>
-            <a href={profile.cv} download className={styles.footerLink}>
-              CV
-            </a>
-          </div>
-        </footer>
       </div>
     </section>
   );

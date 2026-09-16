@@ -5,6 +5,7 @@ import { ArrowUpRight, Menu, X } from "lucide-react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { sections } from "@/data/content";
+import { Magnetic, SwapText } from "@/components/ui/Interactive";
 import styles from "./Navbar.module.css";
 
 const LINKS = sections.filter((s) => s.id !== "index");
@@ -71,16 +72,18 @@ export default function Navbar() {
                   active === s.id ? styles.linkActive : ""
                 }`}
               >
-                {s.label}
+                <SwapText>{s.label}</SwapText>
               </a>
             </li>
           ))}
         </ul>
 
-        <a href="#contact" onClick={go("contact")} className={styles.cta}>
-          Get in touch
-          <ArrowUpRight size={16} strokeWidth={2.5} />
-        </a>
+        <Magnetic strength={0.2}>
+          <a href="#contact" onClick={go("contact")} className={styles.cta}>
+            <SwapText>Get in touch</SwapText>
+            <ArrowUpRight size={16} strokeWidth={2.5} />
+          </a>
+        </Magnetic>
 
         <button
           className={styles.burger}
