@@ -1,189 +1,119 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { gsap, SplitText, prefersReducedMotion } from "@/lib/gsap";
+import { ArrowRight, Download } from "lucide-react";
+import { gsap } from "@/lib/gsap";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { profile } from "@/data/content";
 import styles from "./Hero.module.css";
 
-const ROLES = [
-  { n: "01", label: "Full-stack engineering" },
-  { n: "02", label: "Applied machine learning" },
-  { n: "03", label: "Interface and motion" },
-];
-
 export default function Hero({ ready }: { ready: boolean }) {
   const rootRef = useRef<HTMLElement>(null);
+  const reduced = useReducedMotion();
 
   useEffect(() => {
-    // Wait for the preloader to clear, otherwise the reveal plays behind it.
     if (!ready) return;
-
     const root = rootRef.current;
     if (!root) return;
 
-    if (prefersReducedMotion()) {
-      gsap.set(root.querySelectorAll("[data-reveal]"), {
-        visibility: "visible",
-        opacity: 1,
-        y: 0,
-      });
+    const reveal = root.querySelectorAll("[data-reveal]");
+
+    if (reduced) {
+      gsap.set(reveal, { visibility: "visible", opacity: 1, y: 0 });
       return;
     }
 
     const ctx = gsap.context(() => {
-      const splits: SplitText[] = [];
+      gsap.set(reveal, { visibility: "visible" });
 
-      const lines = gsap.utils.toArray<HTMLElement>(`.${styles.lineInner}`);
-      lines.forEach((line) => {
-        splits.push(
-          new SplitText(line, { type: "words,chars", charsClass: "heroChar" })
-        );
-      });
-
-      const chars = gsap.utils.toArray<HTMLElement>(".heroChar");
-
-      gsap.set(root.querySelectorAll("[data-reveal]"), { visibility: "visible" });
-
-      const tl = gsap.timeline({ delay: 0.15 });
-
-      // Characters rise into their mask, each a beat behind the last.
-      tl.from(chars, {
-        yPercent: 118,
-        duration: 1.25,
-        ease: "swiss",
-        stagger: { each: 0.022, from: "start" },
-      })
+      /* The headline is revealed as a whole rather than split into characters.
+         SplitText wraps each char in its own inline-block span, which leaves
+         the gradient heading with no text of its own to clip to, so
+         `background-clip: text` renders nothing and the words disappear. */
+      gsap
+        .timeline({ delay: 0.1 })
+        .from(`.${styles.titleInner}`, {
+          yPercent: 108,
+          duration: 1,
+          ease: "swiss",
+        })
         .from(
-          `.${styles.top} > *`,
-          { yPercent: -120, opacity: 0, duration: 0.9, stagger: 0.08 },
+          [`.${styles.pill}`, `.${styles.lead}`, `.${styles.actions}`],
+          { y: 24, opacity: 0, duration: 0.7, stagger: 0.09 },
           0.25
         )
         .from(
-          `.${styles.lower}`,
-          { opacity: 0, y: 26, duration: 1 },
+          `.${styles.stat}`,
+          { y: 20, opacity: 0, duration: 0.6, stagger: 0.08 },
           0.5
         )
         .from(
-          `.${styles.fieldLine}`,
-          { scaleY: 0, transformOrigin: "top center", duration: 1.4, stagger: 0.035 },
+          [`.${styles.glowA}`, `.${styles.glowB}`],
+          { scale: 0.7, opacity: 0, duration: 1.6 },
           0
-        )
-        .from(`.${styles.scrollCue}`, { opacity: 0, duration: 0.8 }, 1.1);
+        );
 
-      // Parallax: the display type holds while the page moves under it, and the
-      // supporting rows drift faster. Scrubbed, so it tracks the scroll exactly.
-      gsap.to(`.${styles.nameBlock}`, {
-        yPercent: 26,
+      // Gentle drift on the gradient lights as the page scrolls away.
+      gsap.to(`.${styles.glowA}`, {
+        yPercent: 30,
         ease: "none",
-        scrollTrigger: {
-          trigger: root,
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-        },
+        scrollTrigger: { trigger: root, start: "top top", end: "bottom top", scrub: true },
       });
 
-      gsap.to(`.${styles.lower}`, {
-        yPercent: 62,
-        opacity: 0.2,
-        ease: "none",
-        scrollTrigger: {
-          trigger: root,
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-        },
-      });
-
-      return () => splits.forEach((s) => s.revert());
     }, root);
 
     return () => ctx.revert();
-  }, [ready]);
+  }, [ready, reduced]);
 
   return (
-    <section ref={rootRef} id="index" className={styles.hero}>
-      <div className={styles.field} aria-hidden="true">
-        {Array.from({ length: 12 }).map((_, i) => (
-          <div key={i} className={styles.fieldLine} />
-        ))}
-      </div>
+    <section ref={rootRef} id="index" className={`${styles.hero} surface-cream`}>
+      <div className={`${styles.glow} ${styles.glowA}`} aria-hidden="true" />
+      <div className={`${styles.glow} ${styles.glowB}`} aria-hidden="true" />
 
-      <header className={`${styles.top} shell`} data-reveal>
-        <span className="meta">{profile.location}</span>
-        <span className="meta">Portfolio — 2026</span>
+      <div className={`${styles.inner} shell`}>
         {profile.available && (
-          <span className={`${styles.available} meta`}>
-            <span className={styles.dot} />
+          <span className={styles.pill} data-reveal>
+            <span className={styles.pulse} />
             Open to graduate roles
           </span>
         )}
-      </header>
 
-      <div className={`${styles.middle} shell`}>
-        <h1 className={styles.nameBlock}>
-          <span className={styles.line}>
-            <span className={styles.lineInner} data-reveal>
-              {profile.firstName}
-            </span>
-          </span>
-          <span className={styles.line}>
-            <span
-              className={`${styles.lineInner} ${styles.lineOutline}`}
-              data-reveal
-            >
-              {profile.lastName}
-            </span>
+        <h1 className={styles.title} data-reveal>
+          <span className={styles.titleInner}>
+            I build things that{" "}
+            <span className={styles.accent}>actually ship</span>
           </span>
         </h1>
-      </div>
 
-      <div className={`${styles.scrollCue} shell`} aria-hidden="true">
-        <span className="meta">Scroll</span>
-        <div className={styles.scrollTrack}>
-          <div className={styles.scrollThumb} />
-        </div>
-      </div>
-
-      <div className={`${styles.lower} shell`}>
-        <p className={styles.statement}>
-          Software engineer working across the stack — from{" "}
-          <em>Vision Transformers on 366,000 ECG recordings</em> to a
-          LangGraph claim-auditing system shipped solo.
+        <p className={styles.lead} data-reveal>
+          {profile.title} in {profile.location}. Machine learning, full stack,
+          and the messy bits in between.
         </p>
 
-        <div className={styles.roleCol}>
-          {ROLES.map((r) => (
-            <div key={r.n} className={styles.roleItem}>
-              <span className="meta">{r.n}</span>
-              <span>{r.label}</span>
-            </div>
-          ))}
-        </div>
-
-        <nav className={styles.actions}>
-          <a
-            href="#work"
-            className={styles.action}
-            data-hover
-            data-cursor="View"
-          >
-            <span>Selected work</span>
-            <span className={styles.arrow}>↗</span>
+        <div className={styles.actions} data-reveal>
+          <a href="#work" className={`${styles.btn} ${styles.btnPrimary}`}>
+            See the work
+            <ArrowRight size={18} strokeWidth={2.5} />
           </a>
           <a
             href={profile.cv}
             download
-            className={styles.action}
-            data-hover
-            data-cursor="Save"
+            className={`${styles.btn} ${styles.btnGhost}`}
           >
-            <span>Curriculum vitae</span>
-            <span className={styles.arrow}>↓</span>
+            <Download size={18} strokeWidth={2.5} />
+            Download CV
           </a>
-        </nav>
-      </div>
+        </div>
 
+        <div className={styles.stats}>
+          {profile.stats.map((s) => (
+            <div key={s.label} className={styles.stat} data-reveal>
+              <span className={styles.statValue}>{s.value}</span>
+              <span className={styles.statLabel}>{s.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }

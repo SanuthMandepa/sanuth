@@ -1,84 +1,66 @@
 /* ==========================================================================
-   Editorial Swiss — design tokens
-   Paper ground, ink type, one signal accent. No gradients, no glass, no glow.
+   Warm light ground, orange gradients.
+   Sections alternate surface colour so they read as separate places.
    ========================================================================== */
 
 :root {
-  /* --- Ground ------------------------------------------------------------ */
-  --paper: #f4f1ea;
-  --paper-raised: #ece8de;
-  --paper-sunk: #e2ddd1;
+  /* --- Surfaces. Sections alternate between these. ----------------------- */
+  --cream: #fff6ee;
+  --white: #ffffff;
+  --sand: #fdece0;
+  --night: #170f0a;
 
-  /* --- Ink --------------------------------------------------------------- */
-  --ink: #111110;
-  --ink-soft: #46443e;
-  --ink-muted: #85806f;
-  --ink-faint: #a9a496;
+  /* --- Text -------------------------------------------------------------- */
+  --ink: #1b1209;
+  --ink-soft: #6c584a;
+  --ink-mute: #9c8878;
+  --on-night: #fff4ea;
+  --on-night-soft: #c4ad9b;
 
-  /* --- The one accent ---------------------------------------------------- */
-  --signal: #e4321b;
-  --signal-soft: rgba(228, 50, 27, 0.12);
+  /* --- Orange ------------------------------------------------------------ */
+  --o-600: #e33d00;
+  --o-500: #ff5100;
+  --o-400: #ff8a00;
+  --o-300: #ffb020;
+  --pink: #ff2d6f;
 
-  /* --- Rules ------------------------------------------------------------- */
-  --rule: rgba(17, 17, 16, 0.16);
-  --rule-strong: rgba(17, 17, 16, 0.32);
-  --rule-faint: rgba(17, 17, 16, 0.08);
+  --grad: linear-gradient(100deg, var(--o-600) 0%, var(--o-500) 38%, var(--o-400) 70%, var(--o-300) 100%);
+  --grad-warm: linear-gradient(135deg, var(--pink) 0%, var(--o-500) 45%, var(--o-300) 100%);
+  --grad-soft: linear-gradient(135deg, #fff0e2 0%, #ffe3cd 100%);
+
+  /* --- Lines and shadow -------------------------------------------------- */
+  --line: rgba(27, 18, 9, 0.1);
+  --line-strong: rgba(27, 18, 9, 0.2);
+  --shadow-sm: 0 2px 8px rgba(94, 48, 12, 0.06);
+  --shadow: 0 14px 40px -12px rgba(94, 48, 12, 0.18);
+  --shadow-lg: 0 40px 80px -24px rgba(94, 48, 12, 0.28);
+  --shadow-orange: 0 18px 44px -12px rgba(255, 81, 0, 0.42);
 
   /* --- Type -------------------------------------------------------------- */
-  --font-sans: var(--font-archivo), "Helvetica Neue", Helvetica, Arial,
-    sans-serif;
-  --font-mono: var(--font-jetbrains), ui-monospace, "SF Mono", Menlo, monospace;
+  --font-sans: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
 
-  /* Fluid scale. Display is deliberately enormous — that is the whole idiom. */
-  /* vw-led on purpose: the display line should fill the measure at every width,
-     so the floor stays low and lets the viewport drive it. */
-  --fs-display: clamp(2.5rem, 16vw, 13.5rem);
-  --fs-h1: clamp(2.5rem, 7.5vw, 6.5rem);
-  --fs-h2: clamp(1.875rem, 4.5vw, 3.75rem);
-  --fs-h3: clamp(1.25rem, 2.2vw, 1.875rem);
-  --fs-lead: clamp(1.0625rem, 1.6vw, 1.375rem);
-  --fs-body: clamp(0.9375rem, 1.05vw, 1.0625rem);
-  --fs-small: 0.8125rem;
-  --fs-meta: 0.6875rem;
-
-  --tracking-display: -0.045em;
-  --tracking-tight: -0.025em;
-  --tracking-meta: 0.14em;
+  --fs-display: clamp(3rem, 12vw, 10rem);
+  --fs-h1: clamp(2.25rem, 6vw, 4.75rem);
+  --fs-h2: clamp(1.875rem, 4vw, 3.25rem);
+  --fs-h3: clamp(1.25rem, 2vw, 1.75rem);
+  --fs-lead: clamp(1.0625rem, 1.5vw, 1.3125rem);
+  --fs-body: clamp(0.9375rem, 1vw, 1.0625rem);
+  --fs-sm: 0.875rem;
+  --fs-label: 0.75rem;
 
   /* --- Space ------------------------------------------------------------- */
-  --gutter: clamp(1.25rem, 4vw, 4.5rem);
-  --section-y: clamp(5rem, 12vh, 11rem);
-  --max-w: 1680px;
+  --gutter: clamp(1.25rem, 4vw, 4rem);
+  --section-y: clamp(4.5rem, 10vh, 9rem);
+  --max-w: 1400px;
+  --radius: 26px;
+  --radius-sm: 16px;
 
   /* --- Motion ------------------------------------------------------------ */
-  --ease-swiss: cubic-bezier(0.16, 1, 0.3, 1);
-  --dur-fast: 0.3s;
-  --dur: 0.6s;
-  --dur-slow: 1.1s;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --fast: 0.25s;
+  --mid: 0.5s;
 
   color-scheme: light;
-}
-
-/* Dark is a genuine inversion, not a filter: warm near-black ground, bone type,
-   and a slightly hotter accent so it holds up against the dark. */
-:root[data-theme="dark"] {
-  --paper: #111110;
-  --paper-raised: #1a1917;
-  --paper-sunk: #0b0b0a;
-
-  --ink: #f4f1ea;
-  --ink-soft: #c4bfb2;
-  --ink-muted: #8b8579;
-  --ink-faint: #5f5a51;
-
-  --signal: #ff4a30;
-  --signal-soft: rgba(255, 74, 48, 0.16);
-
-  --rule: rgba(244, 241, 234, 0.18);
-  --rule-strong: rgba(244, 241, 234, 0.36);
-  --rule-faint: rgba(244, 241, 234, 0.08);
-
-  color-scheme: dark;
 }
 
 /* ==========================================================================
@@ -95,30 +77,26 @@
 
 html {
   -webkit-text-size-adjust: 100%;
-  scroll-behavior: auto;
 }
 
 body {
-  background-color: var(--paper);
+  background: var(--cream);
   color: var(--ink);
   font-family: var(--font-sans);
   font-size: var(--fs-body);
-  line-height: 1.55;
-  font-synthesis-weight: none;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: clip;
-  transition: background-color var(--dur) var(--ease-swiss),
-    color var(--dur) var(--ease-swiss);
 }
 
 h1,
 h2,
 h3,
 h4 {
-  font-weight: 500;
-  line-height: 0.92;
-  letter-spacing: var(--tracking-tight);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
   text-wrap: balance;
 }
 
@@ -143,6 +121,7 @@ button {
   color: inherit;
   background: none;
   border: none;
+  cursor: pointer;
 }
 
 ul,
@@ -151,41 +130,18 @@ ol {
 }
 
 ::selection {
-  background: var(--signal);
-  color: var(--paper);
+  background: var(--o-500);
+  color: #fff;
 }
 
-/* Visible focus for keyboard users only — never removed outright. */
 :focus-visible {
-  outline: 2px solid var(--signal);
+  outline: 3px solid var(--o-500);
   outline-offset: 3px;
-  border-radius: 1px;
+  border-radius: 6px;
 }
 
 /* ==========================================================================
-   Typographic primitives
-   ========================================================================== */
-
-/* Small uppercase mono labels — the connective tissue of the whole layout. */
-.meta {
-  font-family: var(--font-mono);
-  font-size: var(--fs-meta);
-  font-weight: 500;
-  letter-spacing: var(--tracking-meta);
-  text-transform: uppercase;
-  color: var(--ink-muted);
-}
-
-.display {
-  font-size: var(--fs-display);
-  font-weight: 600;
-  line-height: 0.82;
-  letter-spacing: var(--tracking-display);
-  font-variation-settings: "wdth" 100;
-}
-
-/* ==========================================================================
-   Layout
+   Shared pieces
    ========================================================================== */
 
 .shell {
@@ -195,29 +151,88 @@ ol {
   padding-inline: var(--gutter);
 }
 
-/* The 12-column field every section aligns to. */
-.grid12 {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  column-gap: clamp(0.75rem, 1.5vw, 1.75rem);
+/* Section surfaces. Alternating these is what makes each section read as a
+   separate place rather than one continuous wall of text. */
+.surface-cream {
+  background: var(--cream);
 }
 
-@media (max-width: 860px) {
-  .grid12 {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+.surface-white {
+  background: var(--white);
+}
+
+.surface-sand {
+  background: var(--sand);
+}
+
+.surface-night {
+  background: var(--night);
+  color: var(--on-night);
+}
+
+/* Gradient text, used only on the few words that carry a section. */
+.grad-text {
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Small pill label that opens every section. */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--o-600);
+  background: var(--grad-soft);
+  border-radius: 100px;
+  padding: 0.45rem 0.9rem;
+}
+
+.surface-night .eyebrow {
+  color: var(--o-300);
+  background: rgba(255, 138, 0, 0.14);
+}
+
+.section-head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
+}
+
+/* The measure belongs on the title itself. A ch limit on the wrapper resolves
+   against the wrapper's 16px font, not the heading's, which squeezes a 60px
+   headline into a 400px column. */
+.section-title {
+  font-size: var(--fs-h2);
+  max-width: 18ch;
+}
+
+/* Pause animation for anyone who asked for less motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 
-.rule {
-  height: 1px;
-  width: 100%;
-  background: var(--rule);
-  border: 0;
+/* Only hide pre-animation elements once JS is confirmed running, so a script
+   failure can never leave the page blank. */
+html.js-ready [data-reveal] {
+  visibility: hidden;
 }
 
-/* Keeps a jumped-to section clear of the fixed bar instead of landing under it. */
 section[id] {
-  scroll-margin-top: clamp(4rem, 7vw, 5.5rem);
+  scroll-margin-top: 5rem;
 }
 
 /* ==========================================================================
@@ -241,58 +256,24 @@ html.lenis body {
   overflow: hidden;
 }
 
-.lenis.lenis-scrolling iframe {
-  pointer-events: none;
-}
-
 /* ==========================================================================
    Scrollbar
    ========================================================================== */
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 12px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--paper);
+  background: var(--sand);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--rule-strong);
+  background: var(--o-400);
+  border-radius: 100px;
+  border: 3px solid var(--sand);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--signal);
-}
-
-/* ==========================================================================
-   Custom cursor — only on real pointers, never on touch or for reduced motion
-   ========================================================================== */
-
-html.cursor-active,
-html.cursor-active a,
-html.cursor-active button,
-html.cursor-active [data-hover] {
-  cursor: none;
-}
-
-/* ==========================================================================
-   Motion preferences
-   ========================================================================== */
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-/* Elements that animate in start hidden, but only once JS has confirmed it can
-   run. Without this a JS failure would leave the page permanently blank. */
-html.js-ready [data-reveal] {
-  visibility: hidden;
+  background: var(--o-500);
 }

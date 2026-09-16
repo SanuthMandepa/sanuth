@@ -3,136 +3,76 @@
   inset: 0;
   z-index: 9999;
   overflow: hidden;
-  /* Sits behind the panels; only ever seen in the split-second between the
-     last panel clearing and the element unmounting. */
-  background: transparent;
-  pointer-events: all;
 }
-
-/* --- The panels --------------------------------------------------------- */
 
 .panels {
   position: absolute;
   inset: 0;
   display: grid;
-  /* Column count is set from the component so it can respond to viewport. */
   grid-template-columns: repeat(var(--cols), 1fr);
 }
 
+/* Each column carries a slice of one continuous gradient, so while they are
+   stacked the screen reads as a single warm field, not six stripes. */
 .panel {
-  background: var(--ink);
-  /* A hairline in the ground colour keeps the columns legible as separate
-     planes while they are still stacked. */
-  border-right: 1px solid color-mix(in srgb, var(--paper) 8%, transparent);
+  background: var(--grad);
+  background-size: calc(var(--cols) * 100%) 100%;
+  background-position: calc(var(--p) * 100% / (var(--cols) - 1)) 0;
   will-change: transform;
 }
-
-.panel:last-child {
-  border-right: none;
-}
-
-/* --- Content on top of the panels --------------------------------------- */
 
 .content {
   position: absolute;
   inset: 0;
   z-index: 2;
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  place-content: center;
+  justify-items: center;
+  gap: 1.25rem;
   padding: var(--gutter);
-  color: var(--paper);
+  color: #fff;
   pointer-events: none;
+  text-align: center;
 }
 
-:global([data-theme="dark"]) .content {
-  color: var(--ink);
+.name {
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
 }
 
-.top {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 1rem;
-  overflow: hidden;
-}
-
-.topItem {
-  font-family: var(--font-mono);
-  font-size: var(--fs-meta);
-  letter-spacing: var(--tracking-meta);
+.role {
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  opacity: 0.55;
-}
-
-/* --- Counter ------------------------------------------------------------ */
-
-.bottom {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 1.5rem;
+  opacity: 0.85;
 }
 
 .counter {
-  font-family: var(--font-mono);
-  font-size: clamp(4rem, 17vw, 15rem);
-  font-weight: 300;
-  line-height: 0.78;
-  letter-spacing: -0.05em;
+  font-size: clamp(4rem, 15vw, 11rem);
+  font-weight: 800;
+  letter-spacing: -0.06em;
+  line-height: 0.85;
   font-variant-numeric: tabular-nums;
-  display: flex;
-  align-items: flex-end;
+  /* Fixed measure so the number does not jump as it goes 9 to 10 to 100. */
+  min-width: 3ch;
+  text-align: center;
 }
-
-.percent {
-  font-size: 0.24em;
-  font-weight: 500;
-  letter-spacing: 0;
-  margin-bottom: 0.8em;
-  margin-left: 0.3em;
-  opacity: 0.5;
-}
-
-.status {
-  font-family: var(--font-mono);
-  font-size: var(--fs-meta);
-  letter-spacing: var(--tracking-meta);
-  text-transform: uppercase;
-  text-align: right;
-  opacity: 0.55;
-  padding-bottom: 0.9rem;
-  min-width: 11ch;
-}
-
-/* --- Progress rule ------------------------------------------------------ */
 
 .track {
-  grid-row: 2;
-  align-self: center;
-  height: 1px;
-  width: 100%;
-  background: currentColor;
-  opacity: 0.18;
-  position: relative;
+  width: min(320px, 70vw);
+  height: 3px;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.28);
+  overflow: hidden;
 }
 
 .bar {
-  position: absolute;
-  inset: 0;
-  background: var(--signal);
+  height: 100%;
+  width: 100%;
+  background: #fff;
   transform: scaleX(0);
   transform-origin: left center;
-  /* Lifts the accent rule a hair above the hairline so it reads as a fill. */
-  height: 2px;
-  top: -0.5px;
-}
-
-@media (max-width: 640px) {
-  .status {
-    display: none;
-  }
-
-  .counter {
-    font-size: clamp(3.5rem, 26vw, 8rem);
-  }
 }

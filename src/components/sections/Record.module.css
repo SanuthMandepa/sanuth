@@ -3,210 +3,156 @@
   padding-block: var(--section-y);
 }
 
-.header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-  padding-bottom: 1.25rem;
-  border-bottom: 1px solid var(--ink);
-}
+/* --- Timeline cards ------------------------------------------------------ */
 
-.headerTitle {
-  font-size: var(--fs-h2);
-  font-weight: 600;
-  letter-spacing: var(--tracking-display);
-  text-transform: uppercase;
-  font-variation-settings: "wdth" 90;
+.list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: clamp(0.85rem, 1.5vw, 1.25rem);
+  margin-bottom: clamp(3rem, 6vw, 5rem);
 }
-
-/* --- Timeline entries ---------------------------------------------------- */
 
 .entry {
+  display: flex;
+  gap: 1.1rem;
+  padding: clamp(1.25rem, 2vw, 1.75rem);
+  border-radius: var(--radius);
+  background: var(--white);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--fast) var(--ease),
+    box-shadow var(--fast) var(--ease);
+}
+
+.entry:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow);
+}
+
+/* The Ascentic Top 20 is the standout, so it gets the gradient treatment. */
+.entryFeature {
+  background: var(--grad);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: var(--shadow-orange);
+}
+
+.icon {
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 7fr) minmax(0, 3fr);
-  column-gap: clamp(1rem, 3vw, 3rem);
-  row-gap: 0.75rem;
-  padding-block: clamp(1.75rem, 4vw, 3rem);
-  border-bottom: 1px solid var(--rule);
-  position: relative;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 18px;
+  background: var(--grad);
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-orange);
 }
 
-/* A rule that draws itself across the entry as it enters the viewport.
-   --scale is animated from the component; it is registered below so it can
-   be tweened rather than flipping between states. */
-@property --scale {
-  syntax: "<number>";
-  inherits: false;
-  initial-value: 0;
+.entryFeature .icon {
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: none;
 }
 
-.entry::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -1px;
-  height: 1px;
-  width: 100%;
-  background: var(--signal);
-  transform: scaleX(var(--scale, 0));
-  transform-origin: left center;
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
 }
 
 .period {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--o-600);
 }
 
-.main {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+.entryFeature .period {
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .title {
-  font-size: var(--fs-h3);
-  font-weight: 500;
-  line-height: 1.12;
-  letter-spacing: var(--tracking-tight);
-  color: var(--ink);
-  max-width: 30ch;
+  font-size: 1.125rem;
+  font-weight: 750;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
 }
 
 .org {
-  font-size: var(--fs-body);
-  color: var(--ink-soft);
+  font-size: var(--fs-sm);
+  color: var(--ink-mute);
 }
 
-.location {
-  color: var(--ink-muted);
+.entryFeature .org {
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .detail {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  margin-top: 0.4rem;
-}
-
-.detailItem {
-  display: flex;
-  gap: 0.75rem;
-  font-size: var(--fs-small);
-  line-height: 1.6;
+  font-size: var(--fs-sm);
   color: var(--ink-soft);
-  max-width: 62ch;
+  margin-top: 0.25rem;
 }
 
-.detailMark {
-  color: var(--ink-faint);
-  flex-shrink: 0;
-}
-
-.kind {
-  display: flex;
-  justify-content: flex-end;
-  align-items: flex-start;
-}
-
-.kindTag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  padding: 0.25rem 0.6rem;
-  border: 1px solid var(--rule);
-  white-space: nowrap;
-}
-
-/* The Ascentic Top 20 is the standout — it gets the accent. */
-.kindHonour {
-  border-color: var(--signal);
-  color: var(--signal);
+.entryFeature .detail {
+  color: rgba(255, 255, 255, 0.92);
 }
 
 /* --- Certifications ------------------------------------------------------ */
-
-.certs {
-  margin-top: clamp(3.5rem, 8vw, 6rem);
-}
 
 .certsHead {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: 1.5rem;
+  gap: 1rem;
   flex-wrap: wrap;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--ink);
+  margin-bottom: 1.25rem;
 }
 
 .certsTitle {
   font-size: var(--fs-h3);
-  font-weight: 500;
-  letter-spacing: var(--tracking-tight);
+  font-weight: 750;
+  letter-spacing: -0.03em;
 }
 
-.certList {
-  columns: 2;
-  column-gap: clamp(1.5rem, 4vw, 4rem);
-  padding-top: 1.25rem;
+.certsCount {
+  font-size: var(--fs-sm);
+  color: var(--ink-mute);
+}
+
+.certs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 0.6rem;
 }
 
 .cert {
-  break-inside: avoid;
-  display: grid;
-  grid-template-columns: 2.25rem minmax(0, 1fr);
-  column-gap: 0.5rem;
-  padding-block: 0.6rem;
-  border-bottom: 1px solid var(--rule-faint);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  border: 1px solid var(--line);
 }
 
-.certNum {
-  font-family: var(--font-mono);
-  font-size: var(--fs-meta);
-  color: var(--ink-faint);
-  padding-top: 0.3em;
+.certCheck {
+  color: var(--o-500);
+  flex-shrink: 0;
+  margin-top: 0.1rem;
 }
 
 .certName {
-  font-size: var(--fs-small);
-  line-height: 1.45;
-  color: var(--ink);
+  font-size: var(--fs-sm);
+  font-weight: 650;
+  line-height: 1.3;
 }
 
 .certIssuer {
-  font-family: var(--font-mono);
-  font-size: var(--fs-meta);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-muted);
   display: block;
-  margin-top: 0.2rem;
-}
-
-.certNote {
-  color: var(--ink-faint);
-  text-transform: none;
-  letter-spacing: 0;
-}
-
-@media (max-width: 1000px) {
-  .entry {
-    grid-template-columns: minmax(0, 2fr) minmax(0, 8fr);
-  }
-  .kind {
-    grid-column: 1 / -1;
-    justify-content: flex-start;
-  }
-}
-
-@media (max-width: 860px) {
-  .entry {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .certList {
-    columns: 1;
-  }
+  font-size: var(--fs-label);
+  color: var(--ink-mute);
+  font-weight: 600;
+  margin-top: 0.15rem;
 }

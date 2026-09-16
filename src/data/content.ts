@@ -1,40 +1,38 @@
 /**
  * Single source of truth for every piece of copy on the site.
  *
- * Everything here is transcribed from Sanuth_Mandepa_CV.pdf so the site and the
- * CV can never drift apart again. When the CV changes, change this file — the
- * sections read from it and will follow.
+ * Transcribed from Sanuth_Mandepa_CV.pdf, then cut to roughly a third of its
+ * original length: on screen the detail belongs in the CV, not the page.
  *
- * TODO(sanuth): fields marked `null` need real values. See the notes in each
- * block. Images go in /public/projects/ and are referenced from `cover`.
+ * House style: no em dashes anywhere. Use a comma, a full stop, or a plain
+ * hyphen in ranges.
+ *
+ * TODO(sanuth): fields marked `null` need real values. Images go in
+ * /public/projects/ and are referenced from `cover`.
  */
 
 export type ProjectStatus = "shipped" | "building" | "research" | "archived";
 
 export interface Project {
-  /** Two-digit index shown as the editorial section number. */
   index: string;
   slug: string;
   title: string;
+  /** One short line under the title. */
   subtitle: string;
-  /** Short kicker shown above the title. */
   discipline: string;
   period: string;
   status: ProjectStatus;
-  role: string | null;
-  context: string | null;
-  stack: string[];
-  /** 2–4 sentences. The narrative version. */
+  /** lucide-react icon name, resolved in the component. */
+  icon: string;
+  /** Two sentences at most. */
   summary: string;
-  /** Bullet-level detail, straight from the CV. */
+  /** Two at most, one line each. */
   highlights: string[];
-  /** Headline numbers rendered as big editorial stats. */
   metrics: { value: string; label: string }[];
+  /** Trimmed to the five that actually signal something. */
+  stack: string[];
   links: { live: string | null; github: string | null };
-  /** Path under /public. Falls back to a typographic placeholder when null. */
   cover: string | null;
-  /** Extra imagery for the detail view. */
-  gallery: string[];
 }
 
 export const projects: Project[] = [
@@ -42,166 +40,115 @@ export const projects: Project[] = [
     index: "01",
     slug: "rxray",
     title: "RxRay",
-    subtitle: "Medical Claim Auditing System",
-    discipline: "AI Systems / Full-Stack",
-    period: "Jul 2026 — Aug 2026",
+    subtitle: "Medical claim auditing",
+    discipline: "AI Systems",
+    period: "Jul 2026 - Aug 2026",
     status: "shipped",
-    role: "Sole engineer",
-    context: "Built during Ascentic AI Launch Pad 2026",
-    stack: [
-      "Python",
-      "LangGraph",
-      "FastAPI",
-      "Google Document AI",
-      "Anthropic Claude API",
-      "Next.js",
-    ],
+    icon: "ScanSearch",
     summary:
-      "A fraud and coherence engine for medical insurance claims. It reads the source documents, cross-checks them against each other and against public drug data, and reasons about whether the clinical story holds together — then hands a reviewer the evidence rather than just a verdict.",
+      "A fraud and coherence engine for medical insurance claims. It reads the source documents, checks them against each other and against public drug data, then hands a reviewer the evidence rather than just a verdict.",
     highlights: [
-      "Built a 22-check fraud and coherence engine spanning document forensics, cross-document consistency and clinical reasoning grounded in RxNorm and openFDA data.",
-      "Orchestrated the checks as a 7-node LangGraph state machine with a human-in-the-loop gate for low-confidence decisions, achieving 30 of 30 identical outcomes across repeated runs.",
-      "Created an offline fixture and replay layer enabling the full test suite to run with network access disabled.",
-      "Shipped the full stack solo: a FastAPI and Server-Sent Events backend and a Next.js reviewer UI with inline evidence highlighting on source documents.",
+      "22 checks across document forensics, cross-document consistency and clinical reasoning.",
+      "Shipped solo: FastAPI backend, Next.js reviewer UI with inline evidence highlighting.",
     ],
     metrics: [
-      { value: "22", label: "Fraud & coherence checks" },
-      { value: "7", label: "LangGraph nodes" },
-      { value: "30/30", label: "Deterministic runs" },
+      { value: "22", label: "Checks" },
+      { value: "7", label: "Graph nodes" },
+      { value: "30/30", label: "Deterministic" },
     ],
-    // TODO(sanuth): paste the real URLs — they are hyperlinks in the CV PDF
-    // that I could not read out of the file.
+    stack: ["Python", "LangGraph", "FastAPI", "Claude API", "Next.js"],
+    // TODO(sanuth): the CV links these, but as embedded PDF hyperlinks I
+    // cannot read. Paste the real URLs.
     links: { live: null, github: null },
-    // TODO(sanuth): add /public/projects/rxray-reviewer.png — the reviewer UI
-    // with inline evidence highlighting. This is the strongest single image
-    // you have; it leads the whole work section.
+    // TODO(sanuth): /public/projects/rxray.png, the reviewer UI.
     cover: null,
-    gallery: [],
   },
   {
     index: "02",
     slug: "chagasight",
     title: "ChagaSight",
-    subtitle: "ECG Disease Screening with Vision Transformers",
-    discipline: "Deep Learning / Medical AI",
-    period: "Aug 2025 — Jun 2026",
+    subtitle: "ECG disease screening",
+    discipline: "Machine Learning",
+    period: "Aug 2025 - Jun 2026",
     status: "research",
-    role: "Final-year research project",
-    context: "BEng dissertation, University of Westminster / IIT",
-    stack: [
-      "Python",
-      "PyTorch",
-      "NumPy",
-      "SciPy",
-      "Flask",
-      "React",
-      "Docker",
-      "WFDB",
-      "HuggingFace Spaces",
-      "Vercel",
-    ],
+    icon: "Activity",
     summary:
-      "Chagas disease is diagnosed late because screening at scale is expensive. This is a dual-pathway Vision Transformer ensemble that screens for it directly from a standard 12-lead ECG — pretrained self-supervised on roughly 366,000 unlabelled recordings, because labelled cardiac data is scarce.",
+      "Screens for Chagas disease straight from a standard 12-lead ECG. A dual-pathway Vision Transformer ensemble, pretrained self-supervised on roughly 366,000 unlabelled recordings because labelled cardiac data is scarce.",
     highlights: [
-      "Built a dual-pathway ViT ensemble combining 1D temporal and 2D spatial Vision Transformer pathways with REPA cross-modal alignment, for Chagas disease screening from 12-lead ECG recordings.",
-      "Built the preprocessing pipeline in NumPy and SciPy, then ran self-supervised pretraining (MAE and ST-MEM) on roughly 366,000 unlabelled ECG recordings from PTB-XL, CODE-15% and SaMi-Trop, with 5-fold stratified cross-validation.",
-      "Achieved AUROC 0.8707 with the dual-pathway ensemble, ahead of both single-pathway baselines (1D: 0.8567, 2D: 0.7079).",
-      "Containerised a Flask inference API with Docker and deployed it to HuggingFace Spaces, with a React frontend on Vercel for ECG upload and real-time inference.",
+      "Beat both single-pathway baselines (1D 0.8567, 2D 0.7079) with the ensemble.",
+      "Flask inference API in Docker on HuggingFace Spaces, React frontend on Vercel.",
     ],
     metrics: [
-      { value: "0.8707", label: "AUROC, dual-pathway ensemble" },
-      { value: "366K", label: "Unlabelled ECGs pretrained on" },
-      { value: "5-fold", label: "Stratified cross-validation" },
+      { value: "0.8707", label: "AUROC" },
+      { value: "366K", label: "ECGs pretrained" },
+      { value: "5", label: "Fold CV" },
     ],
-    // TODO(sanuth): paste the real Live Demo + GitHub URLs.
+    stack: ["PyTorch", "Python", "Flask", "Docker", "React"],
     links: { live: null, github: null },
-    // TODO(sanuth): add /public/projects/chagasight-ui.png
     cover: null,
-    gallery: [],
   },
   {
     index: "03",
     slug: "emberloft",
-    title: "Emberloft Studio",
-    subtitle: "Design and Development Studio",
-    discipline: "Studio / Web",
-    period: "May 2026 — Present",
+    title: "Emberloft",
+    subtitle: "Design and development studio",
+    discipline: "Studio",
+    period: "May 2026 - Present",
     status: "building",
-    role: "Co-founder",
-    context: "Four-person studio, pre-launch",
-    stack: ["Next.js", "TypeScript", "Tailwind CSS", "GSAP", "Three.js"],
+    icon: "Flame",
     summary:
-      "A four-person studio taking on web, mobile and UI/UX work. I designed and built the studio site end to end — the GSAP scroll sequences and Three.js scenes are mine.",
+      "A four-person studio taking on web, mobile and UI/UX work. I designed and built the studio site end to end, including the scroll sequences and 3D scenes.",
     highlights: [
-      "Co-founded a four-person studio for web, mobile and UI/UX work (pre-launch).",
-      "Designed and built the studio site end to end, including GSAP scroll sequences and Three.js scenes.",
+      "Co-founded, currently pre-launch.",
+      "Built the site end to end with GSAP and Three.js.",
     ],
     metrics: [
       { value: "4", label: "Person team" },
-      { value: "3", label: "Disciplines — web, mobile, UI/UX" },
+      { value: "3", label: "Disciplines" },
     ],
-    // TODO(sanuth): paste the real Live Site URL.
+    stack: ["Next.js", "TypeScript", "Tailwind", "GSAP", "Three.js"],
     links: { live: null, github: null },
-    // TODO(sanuth): add /public/projects/emberloft-site.png + logo
     cover: null,
-    gallery: [],
   },
   {
     index: "04",
     slug: "pearmo",
     title: "Pearmo",
-    subtitle: "Curated-Matching Mobile App",
-    discipline: "Mobile / Product",
-    period: "Jun 2026 — Present",
+    subtitle: "Curated-matching mobile app",
+    discipline: "Mobile",
+    period: "Jun 2026 - Present",
     status: "building",
-    role: "Co-founder",
-    context: "Android, pre-beta",
-    stack: ["Flutter", "Supabase", "Riverpod"],
+    icon: "Smartphone",
     summary:
-      "An Android app built on Flutter with a Supabase backend. The first prototype taught us enough that we rebuilt the core features and backend logic from scratch rather than patching it.",
+      "An Android app on Flutter with a Supabase backend. The first prototype taught us enough that we rebuilt the core features and backend logic rather than patching them.",
     highlights: [
-      "Co-building an Android app on Flutter with a Supabase backend (pre-beta).",
-      "Rebuilt core features and backend logic after the initial prototype.",
+      "Co-founded, currently pre-beta.",
+      "Rebuilt core features and backend logic after the prototype.",
     ],
-    metrics: [{ value: "Pre-beta", label: "Current stage" }],
-    // TODO(sanuth): paste the real Live Site URL.
+    metrics: [{ value: "Pre-beta", label: "Stage" }],
+    stack: ["Flutter", "Dart", "Supabase", "Riverpod"],
     links: { live: null, github: null },
-    // TODO(sanuth): add 2–3 portrait phone screenshots to
-    // /public/projects/pearmo-1.png etc.
     cover: null,
-    gallery: [],
   },
   {
     index: "05",
     slug: "internova",
     title: "Internova",
-    subtitle: "Coding and Mock Interview Practice Platform",
-    discipline: "Full-Stack / AI",
-    period: "Sep 2023 — Jun 2024",
+    subtitle: "Interview practice platform",
+    discipline: "Full-stack",
+    period: "Sep 2023 - Jun 2024",
     status: "archived",
-    role: "Team project",
-    context: "Software Development Group Project",
-    stack: [
-      "Python",
-      "Flask",
-      "LangChain",
-      "OpenAI API",
-      "Docker",
-      "Google Cloud Run",
-      "React",
-      "MongoDB",
-    ],
+    icon: "Mic",
     summary:
-      "A practice platform for coding and mock interviews. Beyond the answers themselves, it listened to how candidates sounded — a speech emotion analysis service scored delivery, and a retrieval layer gave contextual feedback on content.",
+      "Interview practice that scores what you say and how you sound. A speech emotion service rated delivery, while a retrieval layer gave feedback on the answers themselves.",
     highlights: [
-      "Built a speech emotion analysis service in Flask with an MFCC-based inference pipeline over REST, containerised with Docker and deployed on Google Cloud Run.",
-      "Integrated a retrieval-augmented generation component to give users contextual feedback on their interview answers.",
+      "MFCC-based speech emotion service, containerised on Google Cloud Run.",
+      "Retrieval-augmented feedback on interview answers.",
     ],
     metrics: [],
-    // TODO(sanuth): paste the real GitHub URL.
+    stack: ["Python", "Flask", "LangChain", "Docker", "MongoDB"],
     links: { live: null, github: null },
     cover: null,
-    gallery: [],
   },
 ];
 
@@ -210,203 +157,122 @@ export interface TimelineEntry {
   period: string;
   title: string;
   org: string;
-  location: string | null;
   kind: "work" | "education" | "honour";
-  detail: string[];
+  icon: string;
+  /** One line. Two at the very most. */
+  detail: string;
 }
 
 export const timeline: TimelineEntry[] = [
   {
     index: "01",
-    period: "Jul 2026 — Sep 2026",
-    title: "Ascentic AI Launch Pad 2026 — Top 20",
+    period: "Jul 2026 - Sep 2026",
+    title: "Ascentic AI Launch Pad, Top 20",
     org: "Ascentic",
-    location: null,
     kind: "honour",
-    detail: [
-      "Selected into an AI accelerator cohort of 50 builders paired with 48 industry mentors, and advanced to the Top 20.",
-      "Built RxRay during the program.",
-    ],
+    icon: "Trophy",
+    detail:
+      "Selected into a cohort of 50 builders with 48 industry mentors, and advanced to the Top 20. Built RxRay during the program.",
   },
   {
     index: "02",
-    period: "Aug 2024 — Aug 2025",
+    period: "Aug 2024 - Aug 2025",
     title: "Intern Web Designer",
-    org: "Weblook International (Pvt) Ltd",
-    location: "Colombo, Sri Lanka",
+    org: "Weblook International, Colombo",
     kind: "work",
-    detail: [
-      "Worked in a cross-functional web team across design, build and QA, including scroll and interaction animations with GSAP.",
-      "Built and maintained responsive production websites in WordPress using Elementor, Divi and WooCommerce.",
-      "Produced wireframes and UI flows in Figma, then implemented them as live pages.",
-      "Ran manual QA on live sites, documented defects and handled post-deployment change requests without breaking design consistency.",
-    ],
+    icon: "Briefcase",
+    detail:
+      "A full placement year across design, build and QA. Shipped responsive production sites, wireframed in Figma, and built scroll animations with GSAP.",
   },
   {
     index: "03",
-    period: "Sep 2022 — Sep 2026",
-    title: "BEng (Hons) Software Engineering with Industrial Placement",
-    org: "University of Westminster, United Kingdom",
-    location: "Delivered by the Informatics Institute of Technology, Colombo",
+    period: "Sep 2022 - Sep 2026",
+    title: "BEng (Hons) Software Engineering",
+    org: "University of Westminster, via IIT Colombo",
     kind: "education",
-    detail: ["Upper Second Class Honours (2:1)."],
+    icon: "GraduationCap",
+    detail: "Upper Second Class Honours (2:1), with an industrial placement year.",
   },
   {
     index: "04",
-    period: "2012 — 2021",
-    title: "G.C.E. Advanced Level, Biological Science Stream",
-    org: "Ananda College",
-    location: "Colombo 10, Sri Lanka",
+    period: "2012 - 2021",
+    title: "G.C.E. Advanced Level",
+    org: "Ananda College, Colombo",
     kind: "education",
-    detail: [],
+    icon: "BookOpen",
+    detail: "Biological Science stream.",
   },
 ];
 
 export interface Certification {
   name: string;
   issuer: string;
-  /** Present when the CV notes a partial completion. */
   note: string | null;
-  /** TODO(sanuth): the CV links each of these; paste the URLs here. */
+  /** TODO(sanuth): the CV links each of these. Paste the URLs. */
   url: string | null;
 }
 
-/** All eleven, in CV order. */
 export const certifications: Certification[] = [
-  {
-    name: "AWS Educate: Introduction to Cloud 101",
-    issuer: "Amazon Web Services",
-    note: null,
-    url: null,
-  },
+  { name: "Introduction to Cloud 101", issuer: "AWS Educate", note: null, url: null },
   { name: "Version Control", issuer: "Meta", note: null, url: null },
+  { name: "API Fundamentals Student Expert", issuer: "Postman", note: null, url: null },
+  { name: "Introduction to Generative AI", issuer: "Google", note: null, url: null },
+  { name: "Foundations of Project Management", issuer: "Google", note: null, url: null },
   {
-    name: "Postman API Fundamentals Student Expert",
-    issuer: "Postman",
-    note: null,
-    url: null,
-  },
-  {
-    name: "Introduction to Generative AI",
-    issuer: "Google",
-    note: null,
-    url: null,
-  },
-  {
-    name: "Foundations of Project Management",
-    issuer: "Google",
-    note: null,
-    url: null,
-  },
-  {
-    name: "Python for Everybody Specialization",
-    issuer: "University of Michigan (Coursera)",
+    name: "Python for Everybody",
+    issuer: "University of Michigan",
     note: "3 of 5 courses",
     url: null,
   },
+  { name: "What Is Generative AI", issuer: "LinkedIn Learning", note: null, url: null },
+  { name: "React.js Essential Training", issuer: "LinkedIn Learning", note: null, url: null },
+  { name: "PHP Essential Training", issuer: "LinkedIn Learning", note: null, url: null },
   {
-    name: "What Is Generative AI",
-    issuer: "LinkedIn Learning",
-    note: null,
-    url: null,
-  },
-  {
-    name: "React.js Essential Training",
-    issuer: "LinkedIn Learning",
-    note: null,
-    url: null,
-  },
-  {
-    name: "PHP Essential Training",
-    issuer: "LinkedIn Learning",
-    note: null,
-    url: null,
-  },
-  {
-    name: "Google UX Design Professional Certificate",
-    issuer: "Google (Coursera)",
+    name: "UX Design Professional Certificate",
+    issuer: "Google",
     note: "2 of 8 courses",
     url: null,
   },
   {
-    name: "The Fundamentals of Digital Marketing",
+    name: "Fundamentals of Digital Marketing",
     issuer: "Google Digital Garage",
     note: null,
     url: null,
   },
 ];
 
-/** Grouped exactly as the CV groups them. */
 export const skillGroups = [
   {
     label: "Languages",
-    items: [
-      "Python",
-      "TypeScript",
-      "JavaScript",
-      "Dart",
-      "Java",
-      "PHP",
-      "SQL",
-      "HTML",
-      "CSS",
-    ],
+    icon: "Code2",
+    items: ["Python", "TypeScript", "JavaScript", "Dart", "Java", "PHP", "SQL"],
   },
   {
-    label: "Frontend & Design",
-    items: [
-      "React",
-      "Next.js",
-      "Tailwind CSS",
-      "Flutter",
-      "GSAP",
-      "Three.js",
-      "Figma",
-      "WordPress",
-    ],
+    label: "Frontend",
+    icon: "Palette",
+    items: ["React", "Next.js", "Tailwind", "Flutter", "GSAP", "Three.js", "Figma"],
   },
   {
-    label: "Backend & Data",
-    items: [
-      "FastAPI",
-      "Flask",
-      "Node.js",
-      "REST APIs",
-      "PostgreSQL",
-      "MySQL",
-      "MongoDB",
-      "SQLite",
-      "Supabase",
-      "Firebase",
-    ],
+    label: "Backend and Data",
+    icon: "Database",
+    items: ["FastAPI", "Flask", "Node.js", "PostgreSQL", "MongoDB", "Supabase", "Firebase"],
   },
   {
-    label: "AI & Machine Learning",
+    label: "AI and ML",
+    icon: "BrainCircuit",
     items: [
       "PyTorch",
       "Vision Transformers",
       "Self-supervised learning",
-      "OpenCV",
       "LangGraph",
       "LangChain",
-      "Anthropic Claude API",
-      "OpenAI API",
+      "Claude API",
     ],
   },
   {
-    label: "DevOps, Cloud & Testing",
-    items: [
-      "Docker",
-      "Git",
-      "GitHub Actions",
-      "AWS",
-      "Google Cloud Platform",
-      "Azure",
-      "Vercel",
-      "pytest",
-      "Playwright",
-      "Postman",
-    ],
+    label: "DevOps and Cloud",
+    icon: "Cloud",
+    items: ["Docker", "Git", "GitHub Actions", "AWS", "GCP", "Azure", "Vercel", "pytest"],
   },
 ];
 
@@ -417,7 +283,6 @@ export const profile = {
   title: "Graduate Software Engineer",
   location: "Kalutara, Sri Lanka",
   email: "dssanuthmandepa@gmail.com",
-  // Formatted to match the CV exactly.
   phoneDisplay: "+94 76 087 4718",
   phoneHref: "+94760874718",
   github: "https://github.com/SanuthMandepa",
@@ -425,16 +290,21 @@ export const profile = {
   site: "https://sanuth.vercel.app",
   cv: "/cv.pdf",
   available: true,
-  /** The CV profile paragraph, tightened slightly for screen reading. */
+  /** Two short paragraphs. The CV carries the rest. */
   bio: [
-    "Software Engineering graduate with a completed industrial placement year and experience building and shipping software end to end.",
-    "My final-year research project applied self-supervised Vision Transformers to disease screening from ECG signals. Since then I have built a LangGraph-orchestrated medical claim auditing system solo, and I currently co-build a Flutter mobile app and a small web development studio.",
-    "I work across the stack rather than in one lane, and I am comfortable owning a feature end to end, including testing and deployment.",
+    "Software Engineering graduate with a full placement year behind me and a habit of shipping things end to end.",
+    "My research applied Vision Transformers to ECG disease screening. Since then I built a LangGraph claim auditing system solo, and I co-build a Flutter app and a small studio. I work across the stack, not in one lane.",
+  ],
+  /** Headline numbers for the hero. */
+  stats: [
+    { value: "5", label: "Projects shipped" },
+    { value: "12", label: "Months in industry" },
+    { value: "Top 20", label: "Ascentic AI 2026" },
   ],
 };
 
 export const sections = [
-  { id: "index", label: "Index", n: "00" },
+  { id: "index", label: "Home", n: "00" },
   { id: "work", label: "Work", n: "01" },
   { id: "about", label: "About", n: "02" },
   { id: "record", label: "Record", n: "03" },
