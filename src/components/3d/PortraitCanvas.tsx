@@ -3,24 +3,19 @@
 import { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import Image from "next/image";
-import Portrait, { type PortraitMode } from "./Portrait";
+import Portrait from "./Portrait";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useWebGLSupport } from "@/hooks/useWebGL";
+import { profile } from "@/data/content";
 import styles from "./PortraitCanvas.module.css";
-
-export const MODES: { id: PortraitMode; label: string }[] = [
-  { id: "particles", label: "Particles" },
-  { id: "liquid", label: "Liquid" },
-  { id: "halftone", label: "Halftone" },
-];
 
 /** Plain image, used for reduced motion and when WebGL is unavailable. */
 function StaticPortrait() {
   return (
     <div className={styles.fallback}>
       <Image
-        src="/me.png"
-        alt="Sanuth Mandepa"
+        src={profile.portrait}
+        alt={profile.name}
         fill
         priority
         sizes="(max-width: 900px) 90vw, 40vw"
@@ -30,7 +25,7 @@ function StaticPortrait() {
   );
 }
 
-export default function PortraitCanvas({ mode }: { mode: PortraitMode }) {
+export default function PortraitCanvas() {
   const reduced = useReducedMotion();
   const supported = useWebGLSupport();
 
@@ -45,7 +40,7 @@ export default function PortraitCanvas({ mode }: { mode: PortraitMode }) {
       dpr={[1, 2]}
     >
       <Suspense fallback={null}>
-        <Portrait mode={mode} />
+        <Portrait />
       </Suspense>
     </Canvas>
   );

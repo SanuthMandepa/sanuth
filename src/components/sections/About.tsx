@@ -106,7 +106,7 @@ export default function About() {
           <div className={styles.portraitWrap}>
             <div className={styles.portrait}>
               <Image
-                src="/me.png"
+                src={profile.portrait}
                 alt={`${profile.name}, ${profile.title}`}
                 fill
                 className={styles.portraitImg}

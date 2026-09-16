@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { ArrowUp, ArrowUpRight } from "lucide-react";
 import { gsap } from "@/lib/gsap";
@@ -39,6 +39,71 @@ const COLS = [
     ],
   },
 ];
+
+/**
+ * The XXL wordmark, sized to fill its container exactly.
+ *
+ * Set as HTML text it could only ever be centred, so its glyphs landed wherever
+ * the text happened to end and never met the gutters the rest of the footer
+ * aligns to. As SVG, the viewBox is set to the glyph bounding box, so scaling
+ * the svg to 100% width makes the letters span edge to edge by construction.
+ */
+function Wordmark() {
+  const textRef = useRef<SVGTextElement>(null);
+  const [viewBox, setViewBox] = useState("0 0 760 200");
+
+  useEffect(() => {
+    const el = textRef.current;
+    if (!el) return;
+
+    const fit = () => {
+      const bb = el.getBBox();
+      // Measuring needs a laid-out DOM, so this can only run after mount.
+      if (bb.width > 0) {
+        setViewBox(`${bb.x} ${bb.y} ${bb.width} ${bb.height}`);
+      }
+    };
+
+    // Wait for the webfont: measuring earlier returns the fallback's metrics
+    // and the wordmark ends up the wrong width.
+    const ready = document.fonts?.ready;
+    if (ready) ready.then(fit).catch(fit);
+    else fit();
+  }, []);
+
+  return (
+    <svg
+      className={styles.wordmark}
+      viewBox={viewBox}
+      preserveAspectRatio="xMidYMax meet"
+      role="presentation"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <defs>
+        <linearGradient id="wordmarkFill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="rgba(255,255,255,0.92)" />
+          <stop offset="55%" stopColor="rgba(255,138,0,0.9)" />
+          <stop offset="100%" stopColor="rgba(255,81,0,0.18)" />
+        </linearGradient>
+      </defs>
+      <text
+        ref={textRef}
+        x="0"
+        y="200"
+        fill="url(#wordmarkFill)"
+        style={{
+          fontFamily: "var(--font-outfit)",
+          fontWeight: 700,
+          fontSize: "200px",
+          letterSpacing: "-0.05em",
+        }}
+      >
+        SANUTH
+      </text>
+    </svg>
+  );
+}
 
 export default function Footer() {
   const rootRef = useRef<HTMLElement>(null);
@@ -129,10 +194,10 @@ export default function Footer() {
       </div>
 
       {/* Last element, so it can bleed off the bottom edge without covering
-          anything. Sits outside the shell to reach both gutters. */}
-      <span className={styles.wordmark} aria-hidden="true">
-        SANUTH
-      </span>
+          anything. Inside the shell, so it lines up with the columns above. */}
+      <div className="shell">
+        <Wordmark />
+      </div>
     </footer>
   );
 }

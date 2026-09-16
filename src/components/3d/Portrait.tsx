@@ -4,55 +4,56 @@ import { useMemo, useRef } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
-import {
-  particlesVertex,
-  particlesFragment,
-  planeVertex,
-  liquidFragment,
-  halftoneFragment,
-} from "./portraitShaders";
+import { planeVertex, halftoneFragment } from "./portraitShaders";
+import { profile } from "@/data/content";
 
-export type PortraitMode = "particles" | "liquid" | "halftone";
-
-/* Matches me.png (767 x 1024) so the face is never stretched. */
+/* Matches the portrait (767 x 1024) so the face is never stretched. */
 const PLANE_W = 3;
 const PLANE_H = 4;
+const ASPECT = PLANE_W / PLANE_H;
 
-/* The orange ramp, shared by all three treatments. */
-const DARK = new THREE.Color("#2a1206");
-const MID = new THREE.Color("#ff5100");
-const LIGHT = new THREE.Color("#ffb020");
+/* Roughly how many CSS pixels each halftone dot should occupy. Measured in CSS
+   rather than device pixels on purpose: the dots then look the same size on
+   every display, and a retina screen simply draws each one more crisply
+   instead of halving the apparent screen ruling. */
+const PX_PER_DOT = 3.6;
+const GRID_MIN = 110;
+const GRID_MAX = 420;
 
-/** Pointer in the plane's own coordinates, smoothed so nothing snaps. */
-function usePlanePointer() {
-  const target = useRef(new THREE.Vector2());
-  const smooth = useRef(new THREE.Vector2());
-  const hover = useRef(0);
+const DARK = new THREE.Color("#1c0f05");
+const MID = new THREE.Color("#d8400d");
+const LIGHT = new THREE.Color("#ffc04a");
 
-  useFrame(({ pointer, camera, viewport }, delta) => {
-    // pointer is normalised device coords; scale to world units at z = 0.
-    const h = viewport.getCurrentViewport(camera, [0, 0, 0]).height;
-    const w = viewport.getCurrentViewport(camera, [0, 0, 0]).width;
-    target.current.set((pointer.x * w) / 2, (pointer.y * h) / 2);
+export default function Portrait() {
+  const matRef = useRef<THREE.ShaderMaterial>(null);
+  const point = useRef(new THREE.Vector2(99, 99));
+  const target = useRef(new THREE.Vector2(99, 99));
+  const size = useThree((s) => s.size);
 
-    const k = 1 - Math.pow(0.001, delta);
-    smooth.current.lerp(target.current, k);
-
-    const inside =
-      Math.abs(smooth.current.x) < PLANE_W && Math.abs(smooth.current.y) < PLANE_H;
-    hover.current += ((inside ? 1 : 0) - hover.current) * k;
+  /* Configure in the load callback, not during render: useTexture hands back a
+     cached, shared object, so mutating it while rendering is an impure write
+     that can leak between components. */
+  const texture = useTexture(profile.portrait, (loaded) => {
+    const t = Array.isArray(loaded) ? loaded[0] : loaded;
+    t.wrapS = THREE.ClampToEdgeWrapping;
+    t.wrapT = THREE.ClampToEdgeWrapping;
+    // No mipmaps: every sample is a deliberate point lookup at a cell centre,
+    // and a mip chain would just blur the detail the dots are meant to carry.
+    t.generateMipmaps = false;
+    t.minFilter = THREE.LinearFilter;
+    t.magFilter = THREE.LinearFilter;
+    t.anisotropy = 1;
+    t.needsUpdate = true;
   });
 
-  return { point: smooth, hover };
-}
-
-/** Shared uniform block, so the three modes stay visually consistent. */
-function useBaseUniforms(texture: THREE.Texture) {
-  return useMemo(
+  const uniforms = useMemo(
     () => ({
       uTexture: { value: texture },
       uTime: { value: 0 },
       uMouse: { value: new THREE.Vector2(99, 99) },
+      uGrid: { value: 140 },
+      uAspect: { value: ASPECT },
+      uTexSize: { value: new THREE.Vector2(767, 1024) },
       uIntro: { value: 0 },
       uDark: { value: DARK },
       uMid: { value: MID },
@@ -60,76 +61,32 @@ function useBaseUniforms(texture: THREE.Texture) {
     }),
     [texture]
   );
-}
 
-/* ------------------------------------------------------------- particles -- */
-
-function Particles({ texture }: { texture: THREE.Texture }) {
-  const matRef = useRef<THREE.ShaderMaterial>(null);
-  const { point } = usePlanePointer();
-  const dpr = useThree((s) => s.viewport.dpr);
-
-  const uniforms = useMemo(
-    () => ({
-      uSize: { value: 26 },
-      uPixelRatio: { value: dpr },
-      // How far to push the photo toward the orange ramp. Below 1 the real
-      // skin tones survive, which keeps the face readable.
-      uTint: { value: 0.72 },
-    }),
-    [dpr]
-  );
-
-  const base = useBaseUniforms(texture);
-  const all = useMemo(() => ({ ...base, ...uniforms }), [base, uniforms]);
-
-  useFrame((_, delta) => {
+  useFrame(({ pointer, camera, viewport }, delta) => {
     const u = matRef.current?.uniforms;
     if (!u) return;
+
     u.uTime.value += delta;
-    u.uMouse.value.copy(point.current);
-    u.uIntro.value = Math.min(1, u.uIntro.value + delta * 0.8);
-  });
+    u.uIntro.value = Math.min(1, u.uIntro.value + delta * 1.4);
 
-  return (
-    <points>
-      {/* 181 x 241 vertices, so roughly 44,000 points. */}
-      <planeGeometry args={[PLANE_W, PLANE_H, 180, 240]} />
-      <shaderMaterial
-        ref={matRef}
-        uniforms={all}
-        vertexShader={particlesVertex}
-        fragmentShader={particlesFragment}
-        transparent
-        depthWrite={false}
-      />
-    </points>
-  );
-}
+    const v = viewport.getCurrentViewport(camera, [0, 0, 0]);
 
-/* ---------------------------------------------------------------- liquid -- */
-
-function Liquid({ texture }: { texture: THREE.Texture }) {
-  const matRef = useRef<THREE.ShaderMaterial>(null);
-  const { point, hover } = usePlanePointer();
-
-  const base = useBaseUniforms(texture);
-  const all = useMemo(
-    () => ({ ...base, uHover: { value: 0 } }),
-    [base]
-  );
-
-  useFrame((_, delta) => {
-    const u = matRef.current?.uniforms;
-    if (!u) return;
-    u.uTime.value += delta;
-    // Convert plane coords to 0..1 uv space for the fragment shader.
+    // Pointer, smoothed, then converted to the plane's 0..1 uv space.
+    target.current.set((pointer.x * v.width) / 2, (pointer.y * v.height) / 2);
+    point.current.lerp(target.current, 1 - Math.pow(0.001, delta));
     u.uMouse.value.set(
       point.current.x / PLANE_W + 0.5,
       point.current.y / PLANE_H + 0.5
     );
-    u.uHover.value = hover.current;
-    u.uIntro.value = Math.min(1, u.uIntro.value + delta * 1.2);
+
+    // Dot density follows the plane's real size on screen, so a small stage
+    // and a large one get the same visual screen ruling instead of being
+    // locked to one fixed grid.
+    const planeCssPx = (PLANE_H / v.height) * size.height;
+    u.uGrid.value = Math.min(
+      GRID_MAX,
+      Math.max(GRID_MIN, planeCssPx / PX_PER_DOT)
+    );
   });
 
   return (
@@ -137,42 +94,7 @@ function Liquid({ texture }: { texture: THREE.Texture }) {
       <planeGeometry args={[PLANE_W, PLANE_H, 1, 1]} />
       <shaderMaterial
         ref={matRef}
-        uniforms={all}
-        vertexShader={planeVertex}
-        fragmentShader={liquidFragment}
-        transparent
-        depthWrite={false}
-      />
-    </mesh>
-  );
-}
-
-/* -------------------------------------------------------------- halftone -- */
-
-function Halftone({ texture }: { texture: THREE.Texture }) {
-  const matRef = useRef<THREE.ShaderMaterial>(null);
-  const { point } = usePlanePointer();
-
-  const base = useBaseUniforms(texture);
-  const all = useMemo(() => ({ ...base, uGrid: { value: 68 } }), [base]);
-
-  useFrame((_, delta) => {
-    const u = matRef.current?.uniforms;
-    if (!u) return;
-    u.uTime.value += delta;
-    u.uMouse.value.set(
-      point.current.x / PLANE_W + 0.5,
-      point.current.y / PLANE_H + 0.5
-    );
-    u.uIntro.value = Math.min(1, u.uIntro.value + delta * 1.2);
-  });
-
-  return (
-    <mesh>
-      <planeGeometry args={[PLANE_W, PLANE_H, 1, 1]} />
-      <shaderMaterial
-        ref={matRef}
-        uniforms={all}
+        uniforms={uniforms}
         vertexShader={planeVertex}
         fragmentShader={halftoneFragment}
         transparent
@@ -180,25 +102,4 @@ function Halftone({ texture }: { texture: THREE.Texture }) {
       />
     </mesh>
   );
-}
-
-/* ------------------------------------------------------------------ root -- */
-
-export default function Portrait({ mode }: { mode: PortraitMode }) {
-  /* Configure in the load callback, not during render. useTexture hands back a
-     cached, shared object, so mutating it while rendering is an impure write
-     that can leak between components. */
-  const texture = useTexture("/me.png", (loaded) => {
-    const t = Array.isArray(loaded) ? loaded[0] : loaded;
-    // Clamp so the flow and ripple distortions never wrap pixels round the edge.
-    t.wrapS = THREE.ClampToEdgeWrapping;
-    t.wrapT = THREE.ClampToEdgeWrapping;
-    t.minFilter = THREE.LinearFilter;
-    t.needsUpdate = true;
-  });
-
-  // Keyed so switching modes tears down the old material cleanly.
-  if (mode === "liquid") return <Liquid key="liquid" texture={texture} />;
-  if (mode === "halftone") return <Halftone key="halftone" texture={texture} />;
-  return <Particles key="particles" texture={texture} />;
 }

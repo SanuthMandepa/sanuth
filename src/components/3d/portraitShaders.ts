@@ -1,114 +1,11 @@
 /**
- * GLSL for the three hero portrait treatments.
+ * GLSL for the halftone hero portrait.
  *
- * me.png is a cutout: the subject is opaque and everything around it has
- * alpha 0 (with rgb 0,0,0). Every mode therefore has to gate on tex.a. Reading
+ * The portrait is a cutout: the subject is opaque and everything around it has
+ * alpha 0 (with rgb 0,0,0). The shader has to gate on tex.a, because reading
  * luminance alone paints the transparent surround as the darkest tone on the
  * ramp, which shows up as a black halo round the subject.
  */
-
-/* Maps image brightness onto the orange ramp: dark tones stay deep brown,
-   midtones burn orange, highlights go amber. */
-const RAMP = /* glsl */ `
-vec3 ramp(float b, vec3 dark, vec3 mid, vec3 light) {
-  vec3 c = mix(dark, mid, smoothstep(0.05, 0.5, b));
-  return mix(c, light, smoothstep(0.5, 0.92, b));
-}
-`;
-
-/* The cutout is a bust: it ends in a straight line across the chest. Fading
-   the bottom stops that hard horizontal cut from reading as a mistake, and
-   doubles as a safety net for the distortion modes, which can pull pixels
-   slightly past the cutout edge. */
-const EDGE = /* glsl */ `
-float edgeFade(vec2 uv) {
-  vec2 d = min(uv, 1.0 - uv);
-  float sides = smoothstep(0.0, 0.03, min(d.x, d.y));
-  float bottom = smoothstep(0.0, 0.22, uv.y);
-  return sides * bottom;
-}
-`;
-
-/* ---------------------------------------------------------------- particles */
-
-export const particlesVertex = /* glsl */ `
-uniform sampler2D uTexture;
-uniform float uTime;
-uniform vec2  uMouse;
-uniform float uSize;
-uniform float uPixelRatio;
-uniform float uIntro;
-
-varying float vBright;
-varying float vAlpha;
-varying vec3  vColor;
-
-${EDGE}
-
-void main() {
-  vec3 pos = position;
-  vec4 tex = texture2D(uTexture, uv);
-  float bright = dot(tex.rgb, vec3(0.299, 0.587, 0.114));
-
-  // Depth from luminance, so the portrait reads as relief, not a flat sheet.
-  pos.z += bright * 0.32;
-
-  // Idle breathing.
-  pos.z += sin(uTime * 0.7 + pos.x * 2.2 + pos.y * 1.4) * 0.035;
-
-  // Cursor pushes points away and lifts them toward the camera.
-  vec2 away = pos.xy - uMouse;
-  float d = length(away);
-  float force = smoothstep(0.85, 0.0, d);
-  vec2 dir = d > 0.0001 ? away / d : vec2(0.0, 1.0);
-  pos.xy += dir * force * 0.5;
-  pos.z  += force * 0.75;
-
-  // Entry: points fly in from scattered depth.
-  float scatter = fract(sin(dot(uv, vec2(12.9898, 78.233))) * 43758.5453);
-  pos.z += (1.0 - uIntro) * (scatter - 0.5) * 6.0;
-
-  vec4 mv = modelViewMatrix * vec4(pos, 1.0);
-  gl_Position = projectionMatrix * mv;
-  gl_PointSize = uSize * uPixelRatio * (0.42 + bright) * (3.0 / -mv.z);
-
-  vBright = bright;
-  vColor = tex.rgb;
-  // The cutout's alpha is what isolates the subject.
-  vAlpha = tex.a * edgeFade(uv) * uIntro;
-}
-`;
-
-export const particlesFragment = /* glsl */ `
-uniform vec3 uDark;
-uniform vec3 uMid;
-uniform vec3 uLight;
-
-uniform float uTint;
-
-varying float vBright;
-varying float vAlpha;
-varying vec3  vColor;
-
-${RAMP}
-
-void main() {
-  if (vAlpha < 0.02) discard;
-
-  // Round the square point sprite off and soften its edge.
-  vec2 c = gl_PointCoord - 0.5;
-  float d2 = dot(c, c);
-  if (d2 > 0.25) discard;
-  float edge = smoothstep(0.25, 0.04, d2);
-
-  // Blend the ramp back toward the real photo so the face stays recognisable
-  // rather than reading as a flat orange silhouette.
-  vec3 col = mix(vColor, ramp(vBright, uDark, uMid, uLight), uTint);
-  gl_FragColor = vec4(col, vAlpha * edge);
-}
-`;
-
-/* ------------------------------------------------------------------ liquid */
 
 export const planeVertex = /* glsl */ `
 varying vec2 vUv;
@@ -118,57 +15,13 @@ void main() {
 }
 `;
 
-export const liquidFragment = /* glsl */ `
-uniform sampler2D uTexture;
-uniform float uTime;
-uniform vec2  uMouse;
-uniform float uHover;
-uniform float uIntro;
-uniform vec3  uDark;
-uniform vec3  uMid;
-uniform vec3  uLight;
-
-varying vec2 vUv;
-
-${RAMP}
-${EDGE}
-
-void main() {
-  vec2 uv = vUv;
-  float t = uTime * 0.35;
-
-  // Continuous flow, so the surface is never completely still.
-  uv.x += sin(uv.y * 9.0 + t) * 0.010 + sin(uv.x * 6.0 - t * 1.3) * 0.006;
-  uv.y += cos(uv.x * 8.0 + t * 0.9) * 0.008;
-
-  // Pointer ripple, decaying with distance.
-  vec2 toM = uv - uMouse;
-  float d = length(toM);
-  float ripple = sin(d * 34.0 - uTime * 4.5) * exp(-d * 6.5) * 0.05 * uHover;
-  uv += (d > 0.0001 ? toM / d : vec2(0.0)) * ripple;
-
-  // Channel split widens with the ripple for a bit of energy. Alpha comes from
-  // the untinted centre sample so the cutout edge never fringes.
-  float split = 0.004 + 0.008 * uHover;
-  vec4 mid = texture2D(uTexture, uv);
-  float r = texture2D(uTexture, uv + vec2(split, 0.0)).r;
-  float b = texture2D(uTexture, uv - vec2(split, 0.0)).b;
-  vec3 col = vec3(r, mid.g, b);
-
-  float bright = dot(col, vec3(0.299, 0.587, 0.114));
-  col = mix(col, ramp(bright, uDark, uMid, uLight), 0.62);
-
-  gl_FragColor = vec4(col, mid.a * edgeFade(uv) * uIntro);
-}
-`;
-
-/* ---------------------------------------------------------------- halftone */
-
 export const halftoneFragment = /* glsl */ `
 uniform sampler2D uTexture;
 uniform float uTime;
 uniform vec2  uMouse;
-uniform float uGrid;
+uniform float uGrid;      // cells down the height of the plane
+uniform float uAspect;    // plane width / height, keeps cells square
+uniform vec2  uTexSize;   // source pixels, for the unsharp tap spacing
 uniform float uIntro;
 uniform vec3  uDark;
 uniform vec3  uMid;
@@ -176,28 +29,67 @@ uniform vec3  uLight;
 
 varying vec2 vUv;
 
-${RAMP}
-${EDGE}
+/* Deep brown through burnt orange to amber. Deliberately gentle: in a halftone
+   the dot SIZE is what carries the image, so a violently saturated colour ramp
+   on top just fights it and turns skin into a vibrating red blur. */
+vec3 ramp(float b) {
+  vec3 c = mix(uDark, uMid, smoothstep(0.02, 0.62, b));
+  return mix(c, uLight, smoothstep(0.66, 0.98, b));
+}
+
+/* Luminance of a single texture sample. */
+float lumAt(sampler2D tex, vec2 uv) {
+  return dot(texture2D(tex, uv).rgb, vec3(0.299, 0.587, 0.114));
+}
+
+/* The cutout is a bust, ending in a straight line across the chest. Fading the
+   bottom stops that hard horizontal cut from reading as a mistake. */
+float edgeFade(vec2 uv) {
+  vec2 d = min(uv, 1.0 - uv);
+  return smoothstep(0.0, 0.02, min(d.x, d.y)) * smoothstep(0.0, 0.2, uv.y);
+}
 
 void main() {
-  // Sample once per cell so every dot carries a single flat tone.
-  vec2 cell = (floor(vUv * uGrid) + 0.5) / uGrid;
-  vec4 tex = texture2D(uTexture, cell);
-  if (tex.a < 0.15) discard;
+  // Cells are square in world space: scaling x by the plane aspect stops the
+  // dots turning into ovals on a non-square plane.
+  vec2 grid = vec2(uGrid * uAspect, uGrid);
+  vec2 cellId = floor(vUv * grid);
+  vec2 cellUv = (cellId + 0.5) / grid;
 
-  float bright = dot(tex.rgb, vec3(0.299, 0.587, 0.114));
+  vec4 tex = texture2D(uTexture, cellUv);
+  if (tex.a < 0.12) discard;
 
-  // Dark tones make big dots, light tones make small ones, and the floor keeps
-  // even the brightest highlight visible rather than dropping out.
-  float radius = 0.16 + (1.0 - bright) * 0.36;
+  float lum = dot(tex.rgb, vec3(0.299, 0.587, 0.114));
 
-  radius += smoothstep(0.3, 0.0, distance(cell, uMouse)) * 0.2;
-  radius += sin(uTime * 1.8 + cell.x * 22.0 + cell.y * 15.0) * 0.022;
+  // Unsharp mask. Skin sits in a narrow band of luminance, so without local
+  // contrast the eyes, nose and mouth all resolve to nearly the same dot size
+  // and the face reads as a blur. Subtracting a small blur puts the edges back.
+  vec2 texel = 2.0 / uTexSize;
+  float blur = 0.25 * (
+      lumAt(uTexture, cellUv + vec2(texel.x, 0.0))
+    + lumAt(uTexture, cellUv - vec2(texel.x, 0.0))
+    + lumAt(uTexture, cellUv + vec2(0.0, texel.y))
+    + lumAt(uTexture, cellUv - vec2(0.0, texel.y)));
+  lum += (lum - blur) * 1.1;
 
-  float dist = length(fract(vUv * uGrid) - 0.5);
-  float alpha = smoothstep(radius, radius - 0.12, dist);
+  // Then an S-curve across the range the subject actually occupies, so the
+  // midtones spread out instead of bunching.
+  lum = clamp((lum - 0.05) / 0.82, 0.0, 1.0);
+  lum = smoothstep(0.04, 0.96, lum);
 
-  gl_FragColor = vec4(ramp(bright, uDark, uMid, uLight),
-                      alpha * tex.a * edgeFade(vUv) * uIntro);
+  // Dark tones make big dots. No floor on the radius, so highlights open right
+  // up and the modelling of the face survives.
+  float radius = (1.0 - lum) * 0.52;
+  radius += smoothstep(0.24, 0.0, distance(cellUv, uMouse)) * 0.18;
+  radius += sin(uTime * 1.5 + cellId.x * 0.8 + cellId.y * 0.6) * 0.016;
+
+  float dist = length(fract(vUv * grid) - 0.5);
+
+  // Screen-space derivative keeps the dot edge exactly one pixel wide however
+  // dense the grid gets, so it stays crisp instead of blurring.
+  float aa = fwidth(dist) * 0.9;
+  float alpha = smoothstep(radius + aa, max(radius - aa, 0.0), dist);
+
+  gl_FragColor = vec4(ramp(lum), alpha * tex.a * edgeFade(vUv) * uIntro);
 }
 `;

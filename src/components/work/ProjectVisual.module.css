@@ -1,0 +1,91 @@
+.visual {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: var(--grad-soft);
+}
+
+.svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* --- Shared animation ----------------------------------------------------- */
+
+.draw {
+  stroke-dasharray: var(--len, 1200);
+  stroke-dashoffset: var(--len, 1200);
+  animation: draw 3.2s var(--ease) forwards;
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* A pulse that runs along a path, used for the ECG and the graph edges. */
+.pulse {
+  stroke-dasharray: 26 620;
+  stroke-dashoffset: 646;
+  animation: pulse-run 3.4s linear infinite;
+}
+
+@keyframes pulse-run {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.blink {
+  animation: blink 2.6s var(--ease) infinite;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.rise {
+  transform-origin: center bottom;
+  animation: rise 1.8s var(--ease) infinite alternate;
+}
+
+@keyframes rise {
+  from {
+    transform: scaleY(0.35);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+/* Label in the corner of every visual, so it reads as a diagram not decor. */
+.caption {
+  position: absolute;
+  left: 0.9rem;
+  bottom: 0.8rem;
+  font-size: var(--fs-label);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--o-600);
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Real screenshots replace the diagram with no layout change. */
+.cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

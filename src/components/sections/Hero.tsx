@@ -1,14 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import { ArrowRight, Download } from "lucide-react";
 import { gsap } from "@/lib/gsap";
 import { Magnetic, SwapText } from "@/components/ui/Interactive";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { profile } from "@/data/content";
-import { MODES } from "@/components/3d/PortraitCanvas";
-import type { PortraitMode } from "@/components/3d/Portrait";
 import styles from "./Hero.module.css";
 
 /* Three.js is ~600KB. Keeping it out of the first bundle means the headline
@@ -20,7 +18,6 @@ const PortraitCanvas = dynamic(
 
 export default function Hero({ ready }: { ready: boolean }) {
   const rootRef = useRef<HTMLElement>(null);
-  const [mode, setMode] = useState<PortraitMode>("particles");
   const reduced = useReducedMotion();
 
   useEffect(() => {
@@ -57,11 +54,6 @@ export default function Hero({ ready }: { ready: boolean }) {
           `.${styles.stat}`,
           { y: 20, opacity: 0, duration: 0.6, stagger: 0.08 },
           0.5
-        )
-        .from(
-          `.${styles.modes}`,
-          { y: 16, opacity: 0, duration: 0.6 },
-          0.65
         )
         .from(
           [`.${styles.glowA}`, `.${styles.glowB}`],
@@ -141,26 +133,7 @@ export default function Hero({ ready }: { ready: boolean }) {
 
         <div className={styles.visual}>
           <div className={styles.stage}>
-            <PortraitCanvas mode={mode} />
-          </div>
-
-          <div
-            className={styles.modes}
-            role="group"
-            aria-label="Portrait rendering mode"
-          >
-            {MODES.map((m) => (
-              <button
-                key={m.id}
-                onClick={() => setMode(m.id)}
-                className={`${styles.mode} ${
-                  mode === m.id ? styles.modeActive : ""
-                }`}
-                aria-pressed={mode === m.id}
-              >
-                {m.label}
-              </button>
-            ))}
+            <PortraitCanvas />
           </div>
 
           <span className={styles.hint}>Move your cursor over the portrait</span>

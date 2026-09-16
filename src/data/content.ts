@@ -289,6 +289,8 @@ export const profile = {
   linkedin: "https://linkedin.com/in/sanuthmandepa",
   site: "https://sanuth.vercel.app",
   cv: "/cv.pdf",
+  /* Cutout PNG with a real alpha channel. The shaders depend on that alpha. */
+  portrait: "/portrait.png",
   available: true,
   /** Two short paragraphs. The CV carries the rest. */
   bio: [

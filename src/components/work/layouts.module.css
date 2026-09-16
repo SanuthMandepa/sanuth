@@ -1,0 +1,373 @@
+/* Shared atoms for every Work layout, so the variants differ in structure
+   rather than in a hundred small styling decisions. */
+
+.tag {
+  font-size: var(--fs-label);
+  font-weight: 650;
+  padding: 0.32rem 0.68rem;
+  border-radius: 100px;
+  background: var(--grad-soft);
+  color: var(--o-600);
+  white-space: nowrap;
+}
+
+.tagPlain {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink-mute);
+  font-weight: 600;
+}
+
+.tagRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.iconTile {
+  display: grid;
+  place-items: center;
+  width: clamp(48px, 4.5vw, 64px);
+  height: clamp(48px, 4.5vw, 64px);
+  border-radius: 17px;
+  background: var(--grad);
+  color: #fff;
+  box-shadow: var(--shadow-orange);
+  flex-shrink: 0;
+}
+
+.title {
+  font-size: clamp(1.5rem, 2.6vw, 2.25rem);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+}
+
+.subtitle {
+  font-size: var(--fs-sm);
+  color: var(--ink-mute);
+}
+
+.summary {
+  font-size: var(--fs-body);
+  color: var(--ink-soft);
+  max-width: 52ch;
+}
+
+.metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(1rem, 2.2vw, 2rem);
+}
+
+.metricValue {
+  display: block;
+  font-size: clamp(1.4rem, 2.3vw, 1.95rem);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.metricLabel {
+  font-size: var(--fs-label);
+  color: var(--ink-mute);
+  font-weight: 600;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 1.05rem;
+  border-radius: 100px;
+  font-size: var(--fs-sm);
+  font-weight: 650;
+  border: 1px solid var(--line);
+  transition: background var(--fast) var(--ease),
+    color var(--fast) var(--ease), transform var(--fast) var(--ease);
+}
+
+.link:hover {
+  background: var(--grad);
+  color: #fff;
+  border-color: transparent;
+  transform: translateY(-2px);
+}
+
+.linkOff {
+  color: var(--ink-mute);
+  border-style: dashed;
+  cursor: default;
+}
+
+.card {
+  position: relative;
+  border-radius: var(--radius);
+  background: var(--white);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+/* Gradient hairline along the top edge of a card. */
+.cardEdge::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  border-radius: var(--radius) var(--radius) 0 0;
+  background: var(--grad);
+}
+
+/* ==========================================================================
+   A. Stack: sticky cards with a generated visual
+   ========================================================================== */
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.25rem, 2.5vw, 2rem);
+}
+
+.sticky {
+  position: sticky;
+  top: calc(5.5rem + var(--i) * 0.8rem);
+}
+
+.stackCard {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+  gap: clamp(1.5rem, 3vw, 2.75rem);
+  padding: clamp(1.5rem, 2.6vw, 2.4rem);
+  overflow: hidden;
+  align-items: center;
+}
+
+.stackLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.stackHead {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.stackVisual {
+  aspect-ratio: 16 / 11;
+}
+
+/* ==========================================================================
+   B. Bento: two features over three compact cards
+   ========================================================================== */
+
+.bento {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: clamp(0.75rem, 1.5vw, 1.15rem);
+}
+
+.feature {
+  grid-column: span 3;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: clamp(1.4rem, 2.4vw, 2.1rem);
+  overflow: hidden;
+}
+
+.featureVisual {
+  aspect-ratio: 16 / 7;
+  margin-top: auto;
+}
+
+.compact {
+  grid-column: span 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: clamp(1.2rem, 2vw, 1.6rem);
+}
+
+.compactTitle {
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+@media (max-width: 900px) {
+  .feature,
+  .compact {
+    grid-column: span 6;
+  }
+}
+
+/* ==========================================================================
+   C. Index: one expanding row at a time
+   ========================================================================== */
+
+.index {
+  border-top: 1px solid var(--line);
+}
+
+.row {
+  border-bottom: 1px solid var(--line);
+}
+
+.rowHead {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  padding-block: clamp(1rem, 2vw, 1.5rem);
+  text-align: left;
+  transition: padding-left var(--mid) var(--ease),
+    color var(--fast) var(--ease);
+}
+
+.rowHead:hover,
+.rowOpen .rowHead {
+  padding-left: 0.85rem;
+  color: var(--o-600);
+}
+
+.rowNum {
+  font-size: var(--fs-label);
+  font-weight: 700;
+  color: var(--ink-mute);
+}
+
+.rowOpen .rowNum {
+  color: var(--o-500);
+}
+
+.rowTitle {
+  font-size: clamp(1.4rem, 3vw, 2.4rem);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.05;
+}
+
+.rowMeta {
+  font-size: var(--fs-label);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  white-space: nowrap;
+}
+
+/* Height is animated from the component; overflow keeps it clipped meanwhile. */
+.rowBody {
+  overflow: hidden;
+  height: 0;
+}
+
+.rowBodyInner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  align-items: center;
+  padding-bottom: clamp(1.25rem, 2.5vw, 2rem);
+}
+
+.rowCopy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.rowVisual {
+  aspect-ratio: 16 / 9;
+}
+
+@media (max-width: 820px) {
+  .rowBodyInner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .rowMeta {
+    display: none;
+  }
+}
+
+/* ==========================================================================
+   D. Gallery: full-width rows led by a large visual
+   ========================================================================== */
+
+.gallery {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(3rem, 7vw, 6rem);
+}
+
+.galleryItem {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1.25rem, 2.5vw, 2rem);
+}
+
+.galleryVisual {
+  aspect-ratio: 21 / 9;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.galleryBar {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: clamp(1rem, 2.5vw, 2rem);
+  align-items: center;
+}
+
+.galleryText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.galleryAside {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+@media (max-width: 820px) {
+  .galleryBar {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .galleryAside {
+    align-items: flex-start;
+  }
+  .galleryVisual {
+    aspect-ratio: 16 / 10;
+  }
+}
+
+/* --- Shared responsive ---------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .stackCard {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .stackVisual {
+    order: -1;
+    aspect-ratio: 16 / 9;
+  }
+}
+
+@media (max-width: 720px) {
+  .sticky {
+    position: static;
+  }
+}
