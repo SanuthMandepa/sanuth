@@ -79,8 +79,8 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--o-600);
-  opacity: 0.7;
+  color: var(--o-300);
+  opacity: 0.75;
   pointer-events: none;
 }
 

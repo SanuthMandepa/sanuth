@@ -1,6 +1,6 @@
 /* ==========================================================================
-   Work cards: a large generated visual as the card background, the details
-   panel laid over it, and the whole set stacked on scroll.
+   Work cards: a full-bleed project shot, a dark overlay graded over it, and
+   the details laid directly on the image across the bottom. No panel.
    ========================================================================== */
 
 .stack {
@@ -11,21 +11,22 @@
 
 .sticky {
   position: sticky;
-  top: calc(5.5rem + var(--i) * 0.75rem);
+  top: calc(5.5rem + var(--i) * 0.7rem);
 }
 
 .card {
   position: relative;
   display: flex;
-  align-items: flex-end;
-  min-height: clamp(400px, 58vh, 560px);
-  padding: clamp(1.1rem, 2vw, 1.75rem);
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: clamp(32rem, 82vh, 54rem);
+  padding: clamp(1.5rem, 3vw, 2.75rem);
   border-radius: var(--radius);
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow-lg);
   overflow: hidden;
-  /* A paint containment hint. The card never scales, so the text inside it is
-     always rasterised at its final size and stays sharp. */
+  /* The card is dark now, so its text switches to the light scale. */
+  color: var(--on-night);
+  background: var(--night);
+  box-shadow: var(--shadow-lg);
   isolation: isolate;
 }
 
@@ -36,107 +37,138 @@
   inset: 0 0 auto 0;
   height: 4px;
   background: var(--grad);
-  z-index: 3;
+  z-index: 4;
 }
 
-/* Full-bleed background. Compound selector so it outranks the default styling
-   on ProjectVisual's own root class regardless of stylesheet order. */
+/* Full-bleed shot. The dark card background shows through for `contain`
+   images, which is what gives the phone mockups something to sit on. */
 .card .cardBg {
   position: absolute;
   inset: 0;
   border-radius: 0;
+  background: var(--night);
   z-index: 0;
 }
 
-/* Both project screenshots are light UIs and the details panel is white, so
-   without this the panel would dissolve into the image behind it. Fades out to
-   the right, leaving the interesting half of each shot fully visible. */
-.scrim {
+/* Two of the shots are bright white product UIs. Pulling saturation and
+   brightness down lets them sit under the overlay as a photographic ground
+   rather than glaring through it. */
+.card .cardBg img {
+  filter: saturate(0.82) brightness(0.86) contrast(1.04);
+}
+
+/* Grade the image so type sits on a dark base at the bottom while the middle
+   of the shot stays visible. Two gradients rather than a flat wash, so the
+   picture is never uniformly muddied. */
+.overlay {
   position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  background: linear-gradient(
-    100deg,
-    var(--cream) 0%,
-    color-mix(in srgb, var(--cream) 82%, transparent) 30%,
-    transparent 62%
-  );
+  background:
+    /* Bottom-weighted, for the type. */
+    linear-gradient(
+      to top,
+      rgba(14, 9, 5, 0.96) 0%,
+      rgba(14, 9, 5, 0.9) 26%,
+      rgba(14, 9, 5, 0.66) 52%,
+      rgba(14, 9, 5, 0.52) 100%
+    ),
+    /* Slight left weighting, so the title side is calmer than the picture. */
+    linear-gradient(
+      to right,
+      rgba(14, 9, 5, 0.42) 0%,
+      rgba(14, 9, 5, 0.12) 55%,
+      rgba(14, 9, 5, 0) 100%
+    );
 }
 
-/* The veil that dims a card once the next one starts covering it.
-   Dimming a separate overlay rather than the card's own opacity keeps the
-   entry animation and the stacking scrub off the same property. */
+/* The veil that dims a card once the next slides over it. Dark, to match the
+   card, and a separate element so nothing ever scales the text. */
 .dim {
   position: absolute;
   inset: 0;
-  background: var(--white);
+  background: #0d0805;
   opacity: 0;
   pointer-events: none;
   z-index: 2;
 }
 
-/* --- Details panel -------------------------------------------------------- */
+/* --- Top row -------------------------------------------------------------- */
 
-.panel {
+.top {
   position: relative;
   z-index: 3;
   display: flex;
-  flex-direction: column;
-  gap: 0.85rem;
-  width: min(100%, 34rem);
-  padding: clamp(1.25rem, 2.2vw, 1.85rem);
-  border-radius: var(--radius-sm);
-  /* Solid, not frosted. backdrop-filter re-blurs whatever is behind it on
-     every scroll frame, which is what smeared while the cards stacked, and a
-     photo behind a translucent panel hurts legibility anyway. */
-  background: var(--white);
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow);
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
 }
 
-.head {
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
+.index {
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--o-300);
 }
 
 .iconTile {
   display: grid;
   place-items: center;
-  width: clamp(46px, 4vw, 58px);
-  height: clamp(46px, 4vw, 58px);
-  border-radius: 16px;
-  background: var(--grad);
-  color: #fff;
-  box-shadow: var(--shadow-orange);
+  width: clamp(44px, 3.6vw, 54px);
+  height: clamp(44px, 3.6vw, 54px);
+  border-radius: 15px;
+  background: var(--grad-btn);
+  color: var(--on-grad);
   flex-shrink: 0;
+  margin-right: 0.15rem;
+}
+
+/* --- Bottom content ------------------------------------------------------- */
+
+.content {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: clamp(1.5rem, 4vw, 4rem);
+  align-items: end;
+  margin-top: auto;
+  padding-top: clamp(2rem, 5vw, 4rem);
+}
+
+.lead {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  min-width: 0;
 }
 
 .title {
-  font-size: clamp(1.5rem, 2.6vw, 2.15rem);
+  font-size: clamp(2rem, 4.2vw, 3.5rem);
   font-weight: 700;
-  letter-spacing: -0.035em;
-  line-height: 1.05;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: #fff;
 }
 
 .subtitle {
-  font-size: var(--fs-sm);
-  color: var(--ink-mute);
-}
-
-.index {
-  margin-left: auto;
-  font-size: var(--fs-label);
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--o-text);
-  align-self: flex-start;
+  font-size: var(--fs-lead);
+  color: var(--o-300);
+  font-weight: 500;
 }
 
 .summary {
   font-size: var(--fs-body);
-  color: var(--ink-soft);
+  color: rgba(255, 255, 255, 0.82);
+  max-width: 54ch;
+}
+
+.aside {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  min-width: 0;
 }
 
 /* --- Small parts ---------------------------------------------------------- */
@@ -151,97 +183,106 @@
 .tag {
   font-size: var(--fs-label);
   font-weight: 650;
-  padding: 0.32rem 0.68rem;
+  padding: 0.32rem 0.7rem;
   border-radius: 100px;
-  background: var(--grad-soft);
-  color: var(--o-text);
   white-space: nowrap;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.92);
 }
 
-.tagPlain {
-  background: color-mix(in srgb, var(--white) 65%, transparent);
-  border: 1px solid var(--line);
-  color: var(--ink-mute);
-  font-weight: 600;
+.tagAccent {
+  background: rgba(255, 176, 32, 0.16);
+  border-color: rgba(255, 176, 32, 0.38);
+  color: var(--o-300);
 }
 
 .metrics {
   display: flex;
   flex-wrap: wrap;
-  gap: clamp(1rem, 2.2vw, 1.85rem);
-  padding-block: 0.15rem;
+  gap: clamp(1rem, 2.4vw, 2rem);
 }
 
 .metricValue {
   display: block;
-  font-size: clamp(1.4rem, 2.2vw, 1.85rem);
+  font-size: clamp(1.5rem, 2.4vw, 2.1rem);
   font-weight: 700;
   letter-spacing: -0.04em;
   line-height: 1.1;
-  background: var(--grad);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--o-300);
 }
 
 .metricLabel {
   font-size: var(--fs-label);
-  color: var(--ink-mute);
   font-weight: 600;
+  color: rgba(255, 255, 255, 0.66);
 }
+
+/* --- Links ---------------------------------------------------------------- */
 
 .link {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  padding: 0.55rem 1.05rem;
+  padding: 0.6rem 1.15rem;
   border-radius: 100px;
   font-size: var(--fs-sm);
   font-weight: 650;
-  border: 1px solid var(--line);
-  background: var(--white);
   transition: background var(--fast) var(--ease),
-    color var(--fast) var(--ease), transform var(--fast) var(--ease);
+    color var(--fast) var(--ease), transform var(--fast) var(--ease),
+    border-color var(--fast) var(--ease);
 }
 
-.link:hover {
+/* Solid light chip on the dark card. Hover swaps to the orange fill, which
+   carries dark ink: white on orange never clears 4.5:1. */
+.linkPrimary {
+  background: #fff;
+  color: var(--ink);
+  border: 1px solid transparent;
+}
+
+.linkPrimary:hover {
   background: var(--grad-btn);
   color: var(--on-grad);
-  border-color: transparent;
   transform: translateY(-2px);
 }
 
-.linkOff {
-  color: var(--ink-mute);
-  border-style: dashed;
+/* Outline on dark. Hover fills with light, so the label keeps a dark-on-light
+   pairing either way rather than flipping to a low-contrast orange. */
+.linkGhost {
   background: transparent;
-  cursor: default;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.34);
+}
+
+.linkGhost:hover {
+  background: #fff;
+  color: var(--ink);
+  border-color: #fff;
+  transform: translateY(-2px);
+}
+
+.link svg {
+  transition: transform var(--mid) var(--ease);
+}
+
+.link:hover svg {
+  transform: translate(2px, -2px);
 }
 
 /* --- Responsive ----------------------------------------------------------- */
 
-@media (max-width: 860px) {
+@media (max-width: 900px) {
   .card {
-    min-height: 0;
-    align-items: stretch;
-    padding: 0;
+    min-height: clamp(28rem, 76vh, 44rem);
   }
-  /* The diagram becomes a banner above the details rather than a backdrop:
-     at this width a panel over it would cover the whole thing anyway. */
-  .card .cardBg {
-    position: relative;
-    inset: auto;
-    height: 190px;
-    flex-shrink: 0;
+  .content {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+    align-items: start;
   }
-  .card {
-    flex-direction: column;
-  }
-  .panel {
-    width: 100%;
-    border: none;
-    box-shadow: none;
-    border-radius: 0;
+  .aside {
+    gap: 0.9rem;
   }
 }
 
@@ -251,6 +292,10 @@
     position: static;
   }
   .card {
+    min-height: 30rem;
     box-shadow: var(--shadow);
+  }
+  .content {
+    padding-top: clamp(7rem, 26vh, 12rem);
   }
 }

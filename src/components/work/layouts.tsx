@@ -15,10 +15,10 @@ const STATUS: Record<Project["status"], string> = {
 };
 
 /**
- * Each project is one card: the generated diagram fills the card as a
- * background, and the details sit in a panel laid over it. The set stacks on
- * scroll, with a separate veil element doing the dimming so nothing ever
- * scales the card's text.
+ * Each project is one tall card: the shot fills it edge to edge, a graded dark
+ * overlay sits on top, and the details are laid directly on the image across
+ * the bottom. The set stacks on scroll, with a separate veil element doing the
+ * dimming so nothing ever scales the card's text.
  */
 export function StackLayout({ projects }: { projects: Project[] }) {
   return (
@@ -33,79 +33,72 @@ export function StackLayout({ projects }: { projects: Project[] }) {
           >
             <article className={s.card} data-anim data-spotlight>
               <ProjectVisual project={project} className={s.cardBg} />
-              <span className={s.scrim} aria-hidden="true" />
+              <span className={s.overlay} aria-hidden="true" />
               <span className={s.dim} aria-hidden="true" />
 
-              <div className={s.panel}>
-                <div className={s.head}>
-                  <span className={s.iconTile}>
-                    <Icon size={26} strokeWidth={2} />
-                  </span>
-                  <span>
-                    <h3 className={s.title}>{project.title}</h3>
-                    <span className={s.subtitle}>{project.subtitle}</span>
-                  </span>
-                  <span className={s.index}>{project.index}</span>
+              <div className={s.top}>
+                <span className={s.iconTile}>
+                  <Icon size={24} strokeWidth={2} />
+                </span>
+                <span className={s.index}>{project.index}</span>
+                <span className={`${s.tag} ${s.tagAccent}`}>
+                  {project.discipline}
+                </span>
+                <span className={s.tag}>{STATUS[project.status]}</span>
+                <span className={s.tag}>{project.period}</span>
+              </div>
+
+              <div className={s.content}>
+                <div className={s.lead}>
+                  <h3 className={s.title}>{project.title}</h3>
+                  <p className={s.subtitle}>{project.subtitle}</p>
+                  <p className={s.summary}>{project.summary}</p>
                 </div>
 
-                <div className={s.tagRow}>
-                  <span className={s.tag}>{project.discipline}</span>
-                  <span className={`${s.tag} ${s.tagPlain}`}>
-                    {STATUS[project.status]}
-                  </span>
-                  <span className={`${s.tag} ${s.tagPlain}`}>
-                    {project.period}
-                  </span>
-                </div>
+                <div className={s.aside}>
+                  {project.metrics.length > 0 && (
+                    <div className={s.metrics}>
+                      {project.metrics.map((m) => (
+                        <div key={m.label}>
+                          <span className={s.metricValue}>{m.value}</span>
+                          <span className={s.metricLabel}>{m.label}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
 
-                <p className={s.summary}>{project.summary}</p>
-
-                {project.metrics.length > 0 && (
-                  <div className={s.metrics}>
-                    {project.metrics.map((m) => (
-                      <div key={m.label}>
-                        <span className={s.metricValue}>{m.value}</span>
-                        <span className={s.metricLabel}>{m.label}</span>
-                      </div>
+                  <div className={s.tagRow}>
+                    {project.stack.map((t) => (
+                      <span key={t} className={s.tag}>
+                        {t}
+                      </span>
                     ))}
                   </div>
-                )}
 
-                <div className={s.tagRow}>
-                  {project.stack.map((t) => (
-                    <span key={t} className={`${s.tag} ${s.tagPlain}`}>
-                      {t}
-                    </span>
-                  ))}
-                </div>
-
-                <div className={s.tagRow}>
-                  {project.links.live ? (
-                    <a
-                      href={project.links.live}
-                      target="_blank"
-                      rel="noreferrer"
-                      className={s.link}
-                    >
-                      <SwapText>Live site</SwapText>
-                      <ArrowUpRight size={15} strokeWidth={2.5} />
-                    </a>
-                  ) : (
-                    <span className={`${s.link} ${s.linkOff}`}>
-                      Link coming soon
-                    </span>
-                  )}
-                  {project.links.github && (
-                    <a
-                      href={project.links.github}
-                      target="_blank"
-                      rel="noreferrer"
-                      className={s.link}
-                    >
-                      <GithubMark size={15} />
-                      Source
-                    </a>
-                  )}
+                  <div className={s.tagRow}>
+                    {project.links.live && (
+                      <a
+                        href={project.links.live}
+                        target="_blank"
+                        rel="noreferrer"
+                        className={`${s.link} ${s.linkPrimary}`}
+                      >
+                        <SwapText>Visit site</SwapText>
+                        <ArrowUpRight size={15} strokeWidth={2.5} />
+                      </a>
+                    )}
+                    {project.links.github && (
+                      <a
+                        href={project.links.github}
+                        target="_blank"
+                        rel="noreferrer"
+                        className={`${s.link} ${s.linkGhost}`}
+                      >
+                        <GithubMark size={15} />
+                        Source
+                      </a>
+                    )}
+                  </div>
                 </div>
               </div>
             </article>

@@ -61,9 +61,7 @@ export const projects: Project[] = [
       { value: "30/30", label: "Deterministic" },
     ],
     stack: ["Python", "LangGraph", "FastAPI", "Claude API", "Next.js"],
-    // TODO(sanuth): the CV links these, but as embedded PDF hyperlinks I
-    // cannot read. Paste the real URLs.
-    links: { live: null, github: null },
+    links: { live: "https://rxray.vercel.app", github: null },
     cover: "/projects/rxray.png",
     coverPosition: "72% 6%",
   },
@@ -88,7 +86,7 @@ export const projects: Project[] = [
       { value: "5", label: "Fold CV" },
     ],
     stack: ["PyTorch", "Python", "Flask", "Docker", "React"],
-    links: { live: null, github: null },
+    links: { live: "https://chagasight.vercel.app", github: null },
     cover: "/projects/chagasight.png",
     coverPosition: "88% 8%",
   },
@@ -112,7 +110,7 @@ export const projects: Project[] = [
       { value: "3", label: "Disciplines" },
     ],
     stack: ["Next.js", "TypeScript", "Tailwind", "GSAP", "Three.js"],
-    links: { live: null, github: null },
+    links: { live: "https://www.emberloft.studio", github: null },
     cover: "/projects/emberloft.png",
     coverPosition: "72% 24%",
   },
@@ -133,7 +131,7 @@ export const projects: Project[] = [
     ],
     metrics: [{ value: "Pre-beta", label: "Stage" }],
     stack: ["Flutter", "Dart", "Supabase", "Riverpod"],
-    links: { live: null, github: null },
+    links: { live: "https://www.pearmo.com", github: null },
     cover: "/projects/pearmo.webp",
     coverFit: "contain",
     coverPosition: "78% 50%",
@@ -155,7 +153,7 @@ export const projects: Project[] = [
     ],
     metrics: [],
     stack: ["Python", "Flask", "LangChain", "Docker", "MongoDB"],
-    links: { live: null, github: null },
+    links: { live: null, github: "https://github.com/SanuthMandepa/SDGP-Internova" },
     // TODO(sanuth): drop internova.jpg into /public/projects to replace
     // the generated waveform diagram.
     cover: null,
