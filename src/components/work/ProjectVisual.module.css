@@ -69,11 +69,12 @@
   }
 }
 
-/* Label in the corner of every visual, so it reads as a diagram not decor. */
+/* Label in the corner of every visual, so it reads as a diagram not decor.
+   Anchored right: the details panel occupies the lower left of the card. */
 .caption {
   position: absolute;
-  left: 0.9rem;
-  bottom: 0.8rem;
+  right: 1.1rem;
+  bottom: 0.9rem;
   font-size: var(--fs-label);
   font-weight: 600;
   letter-spacing: 0.08em;
