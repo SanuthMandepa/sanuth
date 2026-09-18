@@ -266,7 +266,12 @@ export default function ProjectVisual({
           alt={`${project.title}, ${project.subtitle}`}
           fill
           className={styles.cover}
+          style={{
+            objectFit: project.coverFit ?? "cover",
+            objectPosition: project.coverPosition ?? "center",
+          }}
           sizes="(max-width: 900px) 100vw, 60vw"
+          priority={project.index === "01"}
           onError={() => setPhotoFailed(true)}
         />
       </div>

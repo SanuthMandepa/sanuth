@@ -33,6 +33,10 @@ export interface Project {
   stack: string[];
   links: { live: string | null; github: string | null };
   cover: string | null;
+  /** How the photo fills the card. Portrait mockups need "contain". */
+  coverFit?: "cover" | "contain";
+  /** object-position, to keep the interesting part clear of the details panel. */
+  coverPosition?: string;
 }
 
 export const projects: Project[] = [
@@ -60,7 +64,8 @@ export const projects: Project[] = [
     // TODO(sanuth): the CV links these, but as embedded PDF hyperlinks I
     // cannot read. Paste the real URLs.
     links: { live: null, github: null },
-    cover: "/projects/rxray.jpg",
+    cover: "/projects/rxray.png",
+    coverPosition: "72% 6%",
   },
   {
     index: "02",
@@ -84,7 +89,8 @@ export const projects: Project[] = [
     ],
     stack: ["PyTorch", "Python", "Flask", "Docker", "React"],
     links: { live: null, github: null },
-    cover: "/projects/chagasight.jpg",
+    cover: "/projects/chagasight.png",
+    coverPosition: "88% 8%",
   },
   {
     index: "03",
@@ -107,7 +113,8 @@ export const projects: Project[] = [
     ],
     stack: ["Next.js", "TypeScript", "Tailwind", "GSAP", "Three.js"],
     links: { live: null, github: null },
-    cover: "/projects/emberloft.jpg",
+    cover: "/projects/emberloft.png",
+    coverPosition: "72% 24%",
   },
   {
     index: "04",
@@ -127,7 +134,9 @@ export const projects: Project[] = [
     metrics: [{ value: "Pre-beta", label: "Stage" }],
     stack: ["Flutter", "Dart", "Supabase", "Riverpod"],
     links: { live: null, github: null },
-    cover: "/projects/pearmo.jpg",
+    cover: "/projects/pearmo.webp",
+    coverFit: "contain",
+    coverPosition: "78% 50%",
   },
   {
     index: "05",
@@ -147,7 +156,9 @@ export const projects: Project[] = [
     metrics: [],
     stack: ["Python", "Flask", "LangChain", "Docker", "MongoDB"],
     links: { live: null, github: null },
-    cover: "/projects/internova.jpg",
+    // TODO(sanuth): drop internova.jpg into /public/projects to replace
+    // the generated waveform diagram.
+    cover: null,
   },
 ];
 

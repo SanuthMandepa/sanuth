@@ -55,9 +55,9 @@
   gap: 0.75rem;
   padding: 1.05rem 1.9rem;
   border-radius: 100px;
-  background: var(--grad);
-  color: #fff;
-  font-weight: 600;
+  background: var(--grad-btn);
+  color: var(--on-grad);
+  font-weight: 650;
   box-shadow: var(--shadow-orange);
   transition: box-shadow var(--fast) var(--ease);
 }

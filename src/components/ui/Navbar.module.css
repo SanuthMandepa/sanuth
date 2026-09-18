@@ -63,13 +63,13 @@
 }
 
 .linkActive {
-  color: #fff;
-  background: var(--grad);
+  color: var(--on-grad);
+  background: var(--grad-btn);
 }
 
 .linkActive:hover {
-  color: #fff;
-  background: var(--grad);
+  color: var(--on-grad);
+  background: var(--grad-btn);
 }
 
 .cta {
@@ -132,7 +132,7 @@
 .sheetNum {
   font-size: var(--fs-label);
   font-weight: 700;
-  color: var(--o-500);
+  color: var(--o-text);
 }
 
 @media (max-width: 860px) {

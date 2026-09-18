@@ -48,6 +48,22 @@
   z-index: 0;
 }
 
+/* Both project screenshots are light UIs and the details panel is white, so
+   without this the panel would dissolve into the image behind it. Fades out to
+   the right, leaving the interesting half of each shot fully visible. */
+.scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    var(--cream) 0%,
+    color-mix(in srgb, var(--cream) 82%, transparent) 30%,
+    transparent 62%
+  );
+}
+
 /* The veil that dims a card once the next one starts covering it.
    Dimming a separate overlay rather than the card's own opacity keeps the
    entry animation and the stacking scrub off the same property. */
@@ -114,7 +130,7 @@
   font-size: var(--fs-label);
   font-weight: 700;
   letter-spacing: 0.08em;
-  color: var(--o-500);
+  color: var(--o-text);
   align-self: flex-start;
 }
 
@@ -138,7 +154,7 @@
   padding: 0.32rem 0.68rem;
   border-radius: 100px;
   background: var(--grad-soft);
-  color: var(--o-600);
+  color: var(--o-text);
   white-space: nowrap;
 }
 
@@ -189,8 +205,8 @@
 }
 
 .link:hover {
-  background: var(--grad);
-  color: #fff;
+  background: var(--grad-btn);
+  color: var(--on-grad);
   border-color: transparent;
   transform: translateY(-2px);
 }

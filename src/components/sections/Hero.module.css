@@ -160,9 +160,11 @@
   transition: transform var(--mid) var(--ease);
 }
 
+/* Dark label on the orange fill. White on this gradient measures 1.8:1 to
+   3.3:1 depending on the stop, well under the 4.5:1 a 14px label needs. */
 .btnPrimary {
-  background: var(--grad);
-  color: #fff;
+  background: var(--grad-btn);
+  color: var(--on-grad);
   box-shadow: var(--shadow-orange);
 }
 
@@ -171,6 +173,7 @@
 }
 
 .btnPrimary:hover {
+  color: var(--cream);
   box-shadow: 0 26px 56px -14px rgba(255, 81, 0, 0.5);
 }
 
@@ -181,11 +184,11 @@
 }
 
 .btnGhost::before {
-  background: var(--grad);
+  background: var(--grad-btn);
 }
 
 .btnGhost:hover {
-  color: #fff;
+  color: var(--on-grad);
   border-color: transparent;
 }
 

@@ -13,7 +13,9 @@
   /* --- Text -------------------------------------------------------------- */
   --ink: #1b1209;
   --ink-soft: #6c584a;
-  --ink-mute: #9c8878;
+  /* Darkened from #9c8878, which measured 3.4:1 on white and 3.2:1 on cream.
+     This tone carries every subtitle, metric label and hint on the site. */
+  --ink-mute: #806c5c;
   --on-night: #fff4ea;
   --on-night-soft: #c4ad9b;
 
@@ -27,6 +29,13 @@
   --grad: linear-gradient(100deg, var(--o-600) 0%, var(--o-500) 38%, var(--o-400) 70%, var(--o-300) 100%);
   --grad-warm: linear-gradient(135deg, var(--pink) 0%, var(--o-500) 45%, var(--o-300) 100%);
   --grad-soft: linear-gradient(135deg, #fff0e2 0%, #ffe3cd 100%);
+  /* Filled buttons. Starts lighter than --grad so INK text clears 4.5:1 at
+     every stop: white never does on orange (1.8:1 at the amber end). */
+  --grad-btn: linear-gradient(100deg, #ea4506 0%, #ff6a00 48%, #ff9c12 100%);
+  --on-grad: var(--ink);
+  /* Orange dark enough to read as TEXT on white or cream. --o-500 manages only
+     3.3:1 there and --o-600 only 4.3:1, both under the 4.5:1 minimum. */
+  --o-text: #c93400;
 
   /* --- Lines and shadow -------------------------------------------------- */
   --line: rgba(27, 18, 9, 0.1);
@@ -199,7 +208,7 @@ ol {
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--o-600);
+  color: var(--o-text);
   background: var(--grad-soft);
   border-radius: 100px;
   padding: 0.45rem 0.9rem;
@@ -273,7 +282,7 @@ ol {
   position: absolute;
   inset: 0;
   transform: translateY(110%);
-  color: var(--o-500);
+  color: var(--o-text);
 }
 
 a:hover [data-swap-a],

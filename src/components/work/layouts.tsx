@@ -33,6 +33,7 @@ export function StackLayout({ projects }: { projects: Project[] }) {
           >
             <article className={s.card} data-anim data-spotlight>
               <ProjectVisual project={project} className={s.cardBg} />
+              <span className={s.scrim} aria-hidden="true" />
               <span className={s.dim} aria-hidden="true" />
 
               <div className={s.panel}>
