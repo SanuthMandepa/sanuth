@@ -233,8 +233,9 @@
     border-color var(--fast) var(--ease);
 }
 
-/* Solid light chip on the dark card. Hover swaps to the orange fill, which
-   carries dark ink: white on orange never clears 4.5:1. */
+/* Solid light chip on the dark card, filling with the deep orange on hover.
+   The label flips light at the same moment the fill goes dark, so it is
+   always dark-on-light or light-on-dark. */
 .linkPrimary {
   background: #fff;
   color: var(--ink);
@@ -245,6 +246,10 @@
   background: var(--grad-btn);
   color: var(--on-grad);
   transform: translateY(-2px);
+}
+
+.linkPrimary:active {
+  background: var(--grad-btn-hover);
 }
 
 /* Outline on dark. Hover fills with light, so the label keeps a dark-on-light

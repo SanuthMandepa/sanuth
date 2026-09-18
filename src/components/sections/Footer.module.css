@@ -63,7 +63,8 @@
 }
 
 .mailto:hover {
-  box-shadow: 0 26px 60px -14px rgba(255, 81, 0, 0.6);
+  background: var(--grad-btn-hover);
+  box-shadow: 0 26px 60px -14px rgba(176, 42, 0, 0.55);
 }
 
 .mailto svg {

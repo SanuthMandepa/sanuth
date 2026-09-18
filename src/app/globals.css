@@ -29,10 +29,12 @@
   --grad: linear-gradient(100deg, var(--o-600) 0%, var(--o-500) 38%, var(--o-400) 70%, var(--o-300) 100%);
   --grad-warm: linear-gradient(135deg, var(--pink) 0%, var(--o-500) 45%, var(--o-300) 100%);
   --grad-soft: linear-gradient(135deg, #fff0e2 0%, #ffe3cd 100%);
-  /* Filled buttons. Starts lighter than --grad so INK text clears 4.5:1 at
-     every stop: white never does on orange (1.8:1 at the amber end). */
-  --grad-btn: linear-gradient(100deg, #ea4506 0%, #ff6a00 48%, #ff9c12 100%);
-  --on-grad: var(--ink);
+  /* Filled buttons. A deep burnt orange, dark enough that WHITE clears 4.5:1
+     at every stop (6.6:1 to 4.5:1). The bright --grad above stays for
+     headings, metrics and glows, where nothing sits on top of it. */
+  --grad-btn: linear-gradient(100deg, #b02a00 0%, #c4330a 52%, #d8400d 100%);
+  --grad-btn-hover: linear-gradient(100deg, #8a2000 0%, #9c2806 52%, #ad3109 100%);
+  --on-grad: #ffffff;
   /* Orange dark enough to read as TEXT on white or cream. --o-500 manages only
      3.3:1 there and --o-600 only 4.3:1, both under the 4.5:1 minimum. */
   --o-text: #c93400;
@@ -278,11 +280,16 @@ ol {
   transition: transform var(--mid) var(--ease);
 }
 
+/* Inherits its colour rather than fixing one. The incoming copy lands on
+   whatever the button is at that moment: an ink fill, an orange fill, a white
+   chip. A single hardcoded accent failed contrast on four of the five
+   surfaces it actually appeared on. The swap is a motion effect, not a
+   colour change. */
 [data-swap-b] {
   position: absolute;
   inset: 0;
   transform: translateY(110%);
-  color: var(--o-text);
+  color: inherit;
 }
 
 a:hover [data-swap-a],

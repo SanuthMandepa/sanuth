@@ -69,7 +69,7 @@
 
 .linkActive:hover {
   color: var(--on-grad);
-  background: var(--grad-btn);
+  background: var(--grad-btn-hover);
 }
 
 .cta {
