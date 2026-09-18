@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import type { Project } from "@/data/content";
 import styles from "./ProjectVisual.module.css";
@@ -251,7 +252,13 @@ export default function ProjectVisual({
   project: Project;
   className?: string;
 }) {
-  if (project.cover) {
+  /* A photo is attempted first and the diagram is the fallback, so dropping a
+     file into /public/projects is the only step needed to switch a card over
+     to a real screenshot. A missing file simply falls back instead of
+     rendering a broken image. */
+  const [photoFailed, setPhotoFailed] = useState(false);
+
+  if (project.cover && !photoFailed) {
     return (
       <div className={`${styles.visual} ${className ?? ""}`}>
         <Image
@@ -259,7 +266,8 @@ export default function ProjectVisual({
           alt={`${project.title}, ${project.subtitle}`}
           fill
           className={styles.cover}
-          sizes="(max-width: 900px) 100vw, 45vw"
+          sizes="(max-width: 900px) 100vw, 60vw"
+          onError={() => setPhotoFailed(true)}
         />
       </div>
     );

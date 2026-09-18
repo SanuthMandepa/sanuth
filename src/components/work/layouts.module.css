@@ -71,10 +71,11 @@
   width: min(100%, 34rem);
   padding: clamp(1.25rem, 2.2vw, 1.85rem);
   border-radius: var(--radius-sm);
-  background: color-mix(in srgb, var(--white) 92%, transparent);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid color-mix(in srgb, var(--white) 70%, transparent);
+  /* Solid, not frosted. backdrop-filter re-blurs whatever is behind it on
+     every scroll frame, which is what smeared while the cards stacked, and a
+     photo behind a translucent panel hurts legibility anyway. */
+  background: var(--white);
+  border: 1px solid var(--line);
   box-shadow: var(--shadow);
 }
 
@@ -224,9 +225,6 @@
     width: 100%;
     border: none;
     box-shadow: none;
-    background: var(--white);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
     border-radius: 0;
   }
 }

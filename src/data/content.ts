@@ -60,8 +60,7 @@ export const projects: Project[] = [
     // TODO(sanuth): the CV links these, but as embedded PDF hyperlinks I
     // cannot read. Paste the real URLs.
     links: { live: null, github: null },
-    // TODO(sanuth): /public/projects/rxray.png, the reviewer UI.
-    cover: null,
+    cover: "/projects/rxray.jpg",
   },
   {
     index: "02",
@@ -85,7 +84,7 @@ export const projects: Project[] = [
     ],
     stack: ["PyTorch", "Python", "Flask", "Docker", "React"],
     links: { live: null, github: null },
-    cover: null,
+    cover: "/projects/chagasight.jpg",
   },
   {
     index: "03",
@@ -108,7 +107,7 @@ export const projects: Project[] = [
     ],
     stack: ["Next.js", "TypeScript", "Tailwind", "GSAP", "Three.js"],
     links: { live: null, github: null },
-    cover: null,
+    cover: "/projects/emberloft.jpg",
   },
   {
     index: "04",
@@ -128,7 +127,7 @@ export const projects: Project[] = [
     metrics: [{ value: "Pre-beta", label: "Stage" }],
     stack: ["Flutter", "Dart", "Supabase", "Riverpod"],
     links: { live: null, github: null },
-    cover: null,
+    cover: "/projects/pearmo.jpg",
   },
   {
     index: "05",
@@ -148,7 +147,7 @@ export const projects: Project[] = [
     metrics: [],
     stack: ["Python", "Flask", "LangChain", "Docker", "MongoDB"],
     links: { live: null, github: null },
-    cover: null,
+    cover: "/projects/internova.jpg",
   },
 ];
 

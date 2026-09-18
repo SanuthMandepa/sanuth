@@ -66,7 +66,8 @@ export default function Work() {
           <div className="section-head">
             <span className="eyebrow">Selected work</span>
             <h2 className="section-title">
-              Things I have <span className="grad-text">shipped</span>
+              Five things I{" "}
+              <span className="grad-text">built and shipped</span>
             </h2>
           </div>
         </header>
