@@ -50,36 +50,47 @@
   z-index: 0;
 }
 
-/* Two of the shots are bright white product UIs. Pulling saturation and
-   brightness down lets them sit under the overlay as a photographic ground
-   rather than glaring through it. */
+/* A light touch now. The overlay above carries the grading, so the shots only
+   need enough taken off to stop the white product UIs glaring. */
 .card .cardBg img {
-  filter: saturate(0.82) brightness(0.86) contrast(1.04);
+  filter: saturate(0.94) brightness(0.95) contrast(1.02);
 }
 
-/* Grade the image so type sits on a dark base at the bottom while the middle
-   of the shot stays visible. Two gradients rather than a flat wash, so the
-   picture is never uniformly muddied. */
+/* Three stacked gradients instead of a flat near-black wash.
+   1. A deep burnt-orange base at the bottom, dark enough to hold white text.
+   2. A diagonal brand wash fading to nothing, so the card belongs to the
+      palette rather than sitting under neutral black.
+   3. A short scrim at the very top, purely so the tag row has something to
+      sit on when a screenshot happens to be bright up there.
+   The middle and upper right are left almost clear, which is where each
+   project shot actually reads. */
 .overlay {
   position: absolute;
   inset: 0;
   z-index: 1;
   pointer-events: none;
   background:
-    /* Bottom-weighted, for the type. */
     linear-gradient(
       to top,
-      rgba(14, 9, 5, 0.96) 0%,
-      rgba(14, 9, 5, 0.9) 26%,
-      rgba(14, 9, 5, 0.66) 52%,
-      rgba(14, 9, 5, 0.52) 100%
+      rgba(46, 12, 2, 0.96) 0%,
+      rgba(42, 12, 2, 0.92) 18%,
+      rgba(38, 13, 4, 0.66) 36%,
+      rgba(32, 14, 6, 0.3) 56%,
+      rgba(26, 14, 8, 0.08) 76%,
+      rgba(22, 14, 8, 0) 100%
     ),
-    /* Slight left weighting, so the title side is calmer than the picture. */
     linear-gradient(
-      to right,
-      rgba(14, 9, 5, 0.42) 0%,
-      rgba(14, 9, 5, 0.12) 55%,
-      rgba(14, 9, 5, 0) 100%
+      115deg,
+      rgba(176, 42, 0, 0.58) 0%,
+      rgba(200, 55, 8, 0.26) 34%,
+      rgba(232, 96, 12, 0.08) 62%,
+      rgba(255, 176, 32, 0) 100%
+    ),
+    linear-gradient(
+      to bottom,
+      rgba(24, 12, 5, 0.58) 0%,
+      rgba(24, 12, 5, 0.16) 12%,
+      rgba(24, 12, 5, 0) 24%
     );
 }
 
